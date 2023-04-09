@@ -15,11 +15,15 @@ dependencies = [
     "fastapi",
     "uvicorn",
     "pydantic",
+    "pydantic[email]",
     "sqlalchemy",
     "alembic",
     "python-dotenv",
     "psycopg2",
     "fastapi-sqlalchemy",
+    "python-jose[cryptography]",
+    "passlib[bcrypt]",
+    "python-multipart"
 ]
 name = "barcode_api"
 readme = "README.md"
