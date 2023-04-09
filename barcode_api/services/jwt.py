@@ -24,7 +24,7 @@ class JwtService(AppService, SecurityMixin):
             expire = datetime.utcnow() + timedelta(
                 minutes=self.config.ACCESS_TOKEN_EXPIRE_MINUTES
             )
-        jwt_payload = {"expires": expire, "subject": str(subject)}
+        jwt_payload = {"expires": str(expire), "subject": str(subject)}
         encoded_jwt = jwt.encode(
             jwt_payload, self.config.SECRET_KEY, algorithm=self.ALGORITHM
         )

@@ -1,17 +1,15 @@
 from datetime import datetime
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class UserBase(BaseModel):
     email: EmailStr | None = None
-    is_active: bool | None = True
-    last_updated: datetime | None = None
 
 
 class UserCreate(UserBase):
     email: EmailStr
-    password: str
+    password: str = Field(..., min_length=6, max_length=32)
 
 
 class UserUpdate(UserBase):
@@ -20,6 +18,8 @@ class UserUpdate(UserBase):
 
 class UserInDBBase(UserBase):
     id: int | None = None
+    is_active: bool | None = True
+    last_updated: datetime | None = None
 
     class Config:
         orm_mode = True

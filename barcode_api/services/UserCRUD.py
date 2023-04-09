@@ -15,14 +15,12 @@ class UserCRUD(AppCrudService[User, UserCreate, UserUpdate], SecurityMixin):
         super().__init__(model=User, db=db, config=config)
 
     def get_by_email(self, email: str) -> User | None:
-        print(self.db)
         return self.db.query(User).filter(User.email == email).first()
 
     def create(self, *, obj_in: UserCreate) -> User:
         db_obj = User(
             email=obj_in.email,
             password=self.get_password_hash(obj_in.password),
-            last_updated=obj_in.last_updated,
         )
         self.db.add(db_obj)
         self.db.commit()
