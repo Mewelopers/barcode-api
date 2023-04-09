@@ -12,6 +12,8 @@ click==8.1.3
     # via uvicorn
 fastapi==0.95.0
     # via barcode-api (pyproject.toml)
+fastapi-sqlalchemy==0.2.1
+    # via barcode-api (pyproject.toml)
 greenlet==2.0.2
     # via sqlalchemy
 h11==0.14.0
@@ -22,18 +24,25 @@ mako==1.2.4
     # via alembic
 markupsafe==2.1.2
     # via mako
+psycopg2==2.9.6
+    # via barcode-api (pyproject.toml)
 pydantic==1.10.7
     # via
     #   barcode-api (pyproject.toml)
     #   fastapi
+python-dotenv==1.0.0
+    # via barcode-api (pyproject.toml)
 sniffio==1.3.0
     # via anyio
 sqlalchemy==2.0.9
     # via
     #   alembic
     #   barcode-api (pyproject.toml)
+    #   fastapi-sqlalchemy
 starlette==0.26.1
-    # via fastapi
+    # via
+    #   fastapi
+    #   fastapi-sqlalchemy
 typing-extensions==4.5.0
     # via
     #   alembic

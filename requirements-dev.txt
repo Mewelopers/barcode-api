@@ -27,6 +27,8 @@ exceptiongroup==1.1.1
     # via pytest
 fastapi==0.95.0
     # via barcode-api (pyproject.toml)
+fastapi-sqlalchemy==0.2.1
+    # via barcode-api (pyproject.toml)
 filelock==3.11.0
     # via virtualenv
 greenlet==2.0.2
@@ -72,6 +74,8 @@ pluggy==1.0.0
     # via pytest
 pre-commit==3.2.2
     # via barcode-api (pyproject.toml)
+psycopg2==2.9.6
+    # via barcode-api (pyproject.toml)
 pydantic==1.10.7
     # via
     #   barcode-api (pyproject.toml)
@@ -87,6 +91,8 @@ pytest-cov==4.0.0
     # via barcode-api (pyproject.toml)
 pytest-mock==3.10.0
     # via barcode-api (pyproject.toml)
+python-dotenv==1.0.0
+    # via barcode-api (pyproject.toml)
 pyyaml==6.0
     # via pre-commit
 ruff==0.0.261
@@ -97,10 +103,13 @@ sqlalchemy==2.0.9
     # via
     #   alembic
     #   barcode-api (pyproject.toml)
+    #   fastapi-sqlalchemy
 sqlalchemy-stubs==0.4
     # via barcode-api (pyproject.toml)
 starlette==0.26.1
-    # via fastapi
+    # via
+    #   fastapi
+    #   fastapi-sqlalchemy
 tomli==2.0.1
     # via
     #   black
