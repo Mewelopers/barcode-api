@@ -1,1 +1,3 @@
 # barcode-api
+
+libpq-dev

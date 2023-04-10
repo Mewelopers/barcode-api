@@ -1,52 +1,61 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-requires = ["setuptools>=42", "setuptools-scm"]
+requires = ["setuptools", "wheel"] # PEP 517
 
 [project]
 authors = [
-  {name = "Szymon Kozioł", email = "szymonkoz@student.agh.edu.pl"},
-  {name = "Inatsi Yermakovich"},
-  {name = "Karolina Klimek"},
-  {name = "Mateusz Lewandowski"},
-  {name = "Patryk Sokoliński"},
-  {name = "Błazej Czaicki"},
+    { name = "Szymon Kozioł", email = "szymonkoz@student.agh.edu.pl" },
+    { name = "Inatsi Yermakovich" },
+    { name = "Karolina Klimek" },
+    { name = "Mateusz Lewandowski" },
+    { name = "Patryk Sokoliński" },
+    { name = "Błazej Czaicki" },
 ]
 dependencies = [
-  "fastapi",
-  "uvicorn",
-  "pydantic",
-  "sqlalchemy",
-  "alembic",
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "pydantic[email]",
+    "sqlalchemy",
+    "alembic",
+    "python-dotenv",
+    "psycopg2",
+    "fastapi-sqlalchemy",
+    "python-jose[cryptography]",
+    "passlib[bcrypt]",
+    "python-multipart"
 ]
 name = "barcode_api"
 readme = "README.md"
-requires-python = ">=3.10"
 version = "0.0.2"
 
 [project.optional-dependencies]
 dev = [
-  "ruff",
-  "black",
-  "mypy",
-  "pre-commit",
-  "pytest",
-  "pytest-cov",
-  "pytest-mock",
-  "pip-tools",
-  "isort",
-  "sqlalchemy-stubs",
+    "ruff",
+    "black",
+    "mypy",
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "pytest-mock",
+    "pip-tools",
+    "isort",
+    "sqlalchemy-stubs",
 ]
 
-[tools.ruff]
+[tool.ruff]
 line-length = 88
 target-version = "py310"
 
-[tools.black]
+[tool.black]
 line-length = 88
-target-version = "py310"
+target-version = ["py310"]
 
 [tool.isort]
 force_grid_wrap = 0
 include_trailing_comma = true
 line_length = 88
 multi_line_output = 3
+
+[tool.setuptools.packages.find]
+include = ["barcode_api*"]
