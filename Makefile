@@ -45,3 +45,7 @@ start:
 migrate:
 	@echo "Running migrations"
 	alembic upgrade head
+
+make-migrations:
+	@echo "Generating migrations"
+	alembic revision --autogenerate -m "$(message)"

@@ -1,30 +1,80 @@
-from barcode_api import config, models, schemas, services
-from fastapi import Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
-from jose import jwt
-from pydantic import ValidationError
+from typing import Any
 
-from . import common, crud, inject
+from barcode_api import config
+from barcode_api.schemas import AuthRole, AuthScopes, OIDCToken
+from barcode_api.schemas.user import User
+from fastapi import Depends, HTTPException, params, status
+from fastapi.security import SecurityScopes
+from fastapi_oidc import get_auth
 
-oauth2_scheme = OAuth2PasswordBearer(
-    tokenUrl=f"{config.settings.API_V1_STR}/auth/access-token"
+authenticate_user = get_auth(
+    client_id=config.settings.OIDC_CLIENT_ID,
+    base_authorization_server_uri=config.settings.OIDC_BASE_AUTHORIZATION_SERVER_URI,
+    issuer=config.settings.OIDC_ISSUER,
+    signature_cache_ttl=config.settings.OIDC_SIGNATURE_CACHE_TTL,
+    token_type=OIDCToken,
 )
 
 
-def get_current_user(
-    settings: common.Settings = Depends(common.get_settings),
-    jwt_service: services.JwtService = Depends(inject.jwt_service),
-    user_crud: services.UserCRUD = Depends(crud.user_crud),
-    token: str = Depends(oauth2_scheme),
-) -> models.User:
-    try:
-        payload = jwt.decode(
-            token, settings.SECRET_KEY, algorithms=[jwt_service.ALGORITHM]
+def authenticate_user_with_scope(
+    scopes: SecurityScopes,
+    token: OIDCToken = Depends(authenticate_user),
+) -> OIDCToken:
+    """
+    Requires all the scopes to be present on the token.
+    In order to be authorized to access the API.
+    """
+    if any(scope not in token.scopes for scope in scopes.scopes):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not enough permissions",
         )
-        token_data = schemas.TokenPayload(**payload)
-    except (jwt.JWTError, ValidationError):
-        raise HTTPException(status_code=404, detail="User not found")
-    user = user_crud.get(id=token_data.subject)
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user
+    return token
+
+
+def get_current_user(
+    token: OIDCToken = Depends(authenticate_user),
+) -> User:
+    return User(
+        id=token.user_id,
+        name=token.user_name,
+        email=token.user_email,
+        roles=token.roles,
+    )
+
+
+def JKPBasicAuth() -> Any:
+    """
+    Requires the user to be authenticated with the default openid scopes
+    """
+    return params.Security(
+        authenticate_user_with_scope,
+        scopes=[
+            AuthScopes.OFFLINE_ACCESS,
+            AuthScopes.OPENID,
+            AuthScopes.PROFILE,
+            AuthScopes.JKP_API,
+            AuthScopes.EMAIL,
+            AuthScopes.ROLES,
+        ],
+    )
+
+
+class PermissionChecker:
+    def __init__(self, require_permissions: list[AuthRole]) -> None:
+        self.require_permissions = require_permissions
+
+    def __call__(self, token: OIDCToken = JKPBasicAuth()) -> OIDCToken:
+        if not token.is_in_any_role(self.require_permissions):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
+            )
+        return token
+
+
+def JKPRoleAuth(*, in_one_of: list[AuthRole]) -> Any:
+    return params.Depends(PermissionChecker(in_one_of))
+
+
+def JKPUserInfo() -> Any:
+    return params.Depends(get_current_user)
