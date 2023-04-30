@@ -21,9 +21,8 @@ dependencies = [
     "python-dotenv",
     "psycopg2",
     "fastapi-sqlalchemy",
-    "python-jose[cryptography]",
-    "passlib[bcrypt]",
-    "python-multipart"
+    "python-multipart",
+    "fastapi-oidc",
 ]
 name = "barcode_api"
 readme = "README.md"

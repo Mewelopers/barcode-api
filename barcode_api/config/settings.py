@@ -20,6 +20,12 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     SQLALCHEMY_DATABASE_URI: PostgresDsn | None = None
 
+    # OIDC
+    OIDC_CLIENT_ID: str
+    OIDC_BASE_AUTHORIZATION_SERVER_URI: str
+    OIDC_ISSUER: str
+    OIDC_SIGNATURE_CACHE_TTL: int
+
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)
     def assemble_db_connection(cls, v: str | None, values: Dict[str, Any]) -> Any:
         if isinstance(v, str):

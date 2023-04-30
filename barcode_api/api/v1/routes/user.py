@@ -1,21 +1,19 @@
-from typing import Any
+from barcode_api.deps.auth import JKPBasicAuth, JKPUserInfo
+from barcode_api.schemas import OIDCToken, User
+from fastapi import APIRouter
 
-from barcode_api import deps, schemas, services
-from fastapi import APIRouter, Depends, HTTPException
-
-router = APIRouter()
+router = APIRouter(prefix="/user", tags=["user"])
 
 
-@router.post("/", response_model=schemas.User)
-def auth_register(
-    *,
-    user_crud: services.UserCRUD = Depends(deps.crud.user_crud),
-    user_in: schemas.UserCreate,
-) -> Any:
-    """
-    Register new user
-    """
-    user = user_crud.get_by_email(email=user_in.email)
-    if user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-    return user_crud.create(obj_in=user_in)
+@router.get("/me", response_model=User)
+def get_user_info(
+    user: User = JKPUserInfo(),
+) -> User:
+    return user
+
+
+@router.get("/token", response_model=OIDCToken)
+def get_user_token(
+    token: OIDCToken = JKPBasicAuth(),
+) -> OIDCToken:
+    return token
