@@ -1,17 +1,16 @@
 from typing import Any
 
-from barcode_api import config
-from barcode_api.schemas import AuthRole, AuthScopes, OIDCToken
-from barcode_api.schemas.user import User
+from barcode_api.config.settings import settings
+from barcode_api.schemas import AuthRole, AuthScopes, OIDCToken, User
 from fastapi import Depends, HTTPException, params, status
 from fastapi.security import SecurityScopes
 from fastapi_oidc import get_auth
 
 authenticate_user = get_auth(
-    client_id=config.settings.OIDC_CLIENT_ID,
-    base_authorization_server_uri=config.settings.OIDC_BASE_AUTHORIZATION_SERVER_URI,
-    issuer=config.settings.OIDC_ISSUER,
-    signature_cache_ttl=config.settings.OIDC_SIGNATURE_CACHE_TTL,
+    client_id=settings.OIDC_CLIENT_ID,
+    base_authorization_server_uri=settings.OIDC_BASE_AUTHORIZATION_SERVER_URI,
+    issuer=settings.OIDC_ISSUER,
+    signature_cache_ttl=settings.OIDC_SIGNATURE_CACHE_TTL,
     token_type=OIDCToken,
 )
 
@@ -66,9 +65,7 @@ class PermissionChecker:
 
     def __call__(self, token: OIDCToken = JKPBasicAuth()) -> OIDCToken:
         if not token.is_in_any_role(self.require_permissions):
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions"
-            )
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not enough permissions")
         return token
 
 

@@ -1,0 +1,14 @@
+{
+  "python.linting.enabled": true,
+  "files.exclude": {
+    "**/.git": true,
+    ".ruff_cache": true,
+    ".mypy_cache": true,
+    ".idea": true,
+    "**/__pycache__": true,
+    "*.egg-info": true,
+    "build": true,
+    ".venv": true
+  },
+  "python.linting.mypyEnabled": true
+}

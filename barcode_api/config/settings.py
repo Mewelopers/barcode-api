@@ -3,7 +3,7 @@ from typing import Any, Dict
 from pydantic import BaseSettings, PostgresDsn, validator
 
 
-class Settings(BaseSettings):
+class _Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
@@ -29,7 +29,8 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return v
         return PostgresDsn.build(
-            scheme="postgresql",
+            # Required +psycopg in order to use psycopg3
+            scheme="postgresql+psycopg",
             user=values.get("POSTGRES_USER"),
             password=values.get("POSTGRES_PASSWORD"),
             host=values.get("POSTGRES_SERVER"),
@@ -39,3 +40,6 @@ class Settings(BaseSettings):
     class Config:
         case_sensitive = True
         env_file = ".env"
+
+
+settings = _Settings()

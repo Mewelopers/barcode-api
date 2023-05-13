@@ -4,5 +4,5 @@ router = APIRouter()
 
 
 @router.get("/hello")
-def hello() -> str:
+async def hello() -> str:
     return "Api is working correctly"

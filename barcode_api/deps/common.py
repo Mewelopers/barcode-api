@@ -1,19 +1,11 @@
-from functools import lru_cache
-from typing import Generator
+from typing import Any
 
-from barcode_api.config import Settings
-from barcode_api.config.database import SessionLocal
-from sqlalchemy.orm import Session
+from barcode_api.config import database
+from fastapi import params
 
 
-def get_db() -> Generator[Session, None, None]:
-    try:
-        db = SessionLocal()
-        yield db
-    finally:
-        db.close()
-
-
-@lru_cache()
-def get_settings() -> Settings:
-    return Settings()
+def DBSession() -> Any:
+    """
+    Dependency for getting a database session.
+    """
+    return params.Depends(database.db_session)

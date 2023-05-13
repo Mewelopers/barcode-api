@@ -4,25 +4,29 @@ requires = ["setuptools", "wheel"] # PEP 517
 
 [project]
 authors = [
-    { name = "Szymon Kozioł", email = "szymonkoz@student.agh.edu.pl" },
-    { name = "Inatsi Yermakovich" },
-    { name = "Karolina Klimek" },
-    { name = "Mateusz Lewandowski" },
-    { name = "Patryk Sokoliński" },
-    { name = "Błazej Czaicki" },
+  {name = "Szymon Kozioł", email = "szymonkoz@student.agh.edu.pl"},
+  {name = "Inatsi Yermakovich"},
+  {name = "Karolina Klimek"},
+  {name = "Mateusz Lewandowski"},
+  {name = "Patryk Sokoliński"},
+  {name = "Błazej Czaicki"},
 ]
 dependencies = [
-    "fastapi",
-    "uvicorn",
-    "pydantic",
-    "pydantic[email]",
-    "sqlalchemy",
-    "alembic",
-    "python-dotenv",
-    "psycopg2",
-    "fastapi-sqlalchemy",
-    "python-multipart",
-    "fastapi-oidc",
+  "fastapi",
+  "uvicorn",
+  "pydantic",
+  "pydantic[email]",
+  "sqlalchemy[asyncio] >= 2.0.13",
+  "SQLAlchemy >= 2.0.13",
+  "alembic",
+  "python-dotenv",
+  "psycopg",
+  "python-multipart",
+  "fastapi-oidc",
+  "python-barcode",
+  "beautifulsoup4", # Scraping dependencies
+  "pyppeteer",
+  "pyppeteer_stealth",
 ]
 name = "barcode_api"
 readme = "README.md"
@@ -30,30 +34,30 @@ version = "0.0.2"
 
 [project.optional-dependencies]
 dev = [
-    "ruff",
-    "black",
-    "mypy",
-    "pre-commit",
-    "pytest",
-    "pytest-cov",
-    "pytest-mock",
-    "pip-tools",
-    "isort",
-    "sqlalchemy-stubs",
+  "ruff",
+  "black",
+  "mypy",
+  "pre-commit",
+  "pytest",
+  "pytest-cov",
+  "pytest-mock",
+  "pip-tools",
+  "isort",
+  "sqlalchemy-stubs",
 ]
 
 [tool.ruff]
-line-length = 88
+line-length = 120
 target-version = "py310"
 
 [tool.black]
-line-length = 88
+line-length = 120
 target-version = ["py310"]
 
 [tool.isort]
 force_grid_wrap = 0
 include_trailing_comma = true
-line_length = 88
+line_length = 120
 multi_line_output = 3
 
 [tool.setuptools.packages.find]

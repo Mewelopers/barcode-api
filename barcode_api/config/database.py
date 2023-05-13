@@ -1,18 +1,35 @@
-import sqlalchemy as sa
-from barcode_api.config import settings
-from sqlalchemy.ext.declarative import as_declarative, declared_attr
+from typing import AsyncGenerator
+
+from barcode_api.config.settings import settings
+from sqlalchemy.ext.asyncio import AsyncAttrs, AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import DeclarativeBase, Mapped, declared_attr, mapped_column
 
 
-@as_declarative()
-class Base:
-    id = sa.Column(sa.Integer, primary_key=True)
-    __name__: str
+class Base(AsyncAttrs, DeclarativeBase):
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
-    @declared_attr
+    @declared_attr.directive
     def __tablename__(cls) -> str:
-        return cls.__name__.lower()
+        return cls.__name__
 
 
-engine = sa.create_engine(settings.SQLALCHEMY_DATABASE_URI)
+engine = create_async_engine(
+    str(settings.SQLALCHEMY_DATABASE_URI),
+    future=True,
+    echo=False,
+    pool_size=10,
+    max_overflow=10,
+    isolation_level="AUTOCOMMIT",
+)
 
-SessionLocal = sa.orm.sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+AsyncDBSession = async_sessionmaker(
+    bind=engine,
+    expire_on_commit=False,
+    class_=AsyncSession,
+)
+
+
+async def db_session() -> AsyncGenerator[AsyncSession, None]:
+    async with AsyncDBSession() as session:
+        yield session
