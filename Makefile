@@ -49,3 +49,10 @@ migrate:
 make-migrations:
 	@echo "Generating migrations"
 	alembic revision --autogenerate -m "$(message)"
+
+ruff-watch:
+	ruff . --watch
+
+mypy-watch:
+	# Requires entr, dmypy, and fd
+	fd . barcode_api --extension py | entr -r dmypy check /_
