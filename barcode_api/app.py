@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import FastAPI
 
 from .api.v1.api import api_router
@@ -13,6 +15,8 @@ app = FastAPI(
 )
 app.include_router(api_router, prefix=settings.API_V1_STR)
 app.add_middleware(ProcessTimeMiddleware)
+
+logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
 
 
 def main() -> None:

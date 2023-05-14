@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from pydantic import BaseSettings, PostgresDsn, validator
+from pydantic import BaseSettings, FilePath, PostgresDsn, validator
 
 
 class _Settings(BaseSettings):
@@ -36,6 +36,9 @@ class _Settings(BaseSettings):
             host=values.get("POSTGRES_SERVER"),
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
+
+    # Scraper
+    BROWSER_PATH: FilePath
 
     class Config:
         case_sensitive = True

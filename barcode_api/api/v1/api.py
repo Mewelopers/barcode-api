@@ -1,7 +1,11 @@
 from barcode_api.deps.auth import JKPBasicAuth
 from fastapi import APIRouter
 
-from .routes import admin, public, user
+from .routes import admin, products, public, user
+
+PUBLIC_ROUTES = [public]
+
+AUTH_REQUIRED_ROUTES = [user, admin, products]
 
 public_router = APIRouter(tags=["public"])
 authenticated_router = APIRouter(
@@ -9,10 +13,11 @@ authenticated_router = APIRouter(
     tags=["authenticated"],
 )
 
-# Include routers here
-public_router.include_router(public.router)
-authenticated_router.include_router(user.router)
-authenticated_router.include_router(admin.router)
+for entry in PUBLIC_ROUTES:
+    public_router.include_router(entry.router)
+
+for entry in AUTH_REQUIRED_ROUTES:
+    authenticated_router.include_router(entry.router)
 
 
 api_router = APIRouter()

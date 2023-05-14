@@ -16,6 +16,8 @@ class ScrapeResult(Base):
         TIMESTAMP(timezone=True), nullable=False, server_default=func.now()
     )
 
+    scrape_strategy: Mapped[str] = mapped_column(String(255), nullable=False)
+
     html: Mapped[str] = mapped_column(Text, nullable=False)
 
     def __repr__(self) -> str:
