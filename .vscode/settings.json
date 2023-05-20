@@ -10,5 +10,20 @@
     "build": true,
     ".venv": true
   },
-  "python.linting.mypyEnabled": true
+  "python.linting.mypyEnabled": true,
+  "sqltools.connections": [
+    {
+      "previewLimit": 50,
+      "server": "mws02.mikr.us",
+      "port": 40475,
+      "driver": "PostgreSQL",
+      "name": "Prod DB",
+      "database": "barcode",
+      "username": "postgres"
+    }
+  ],
+  "mypy.configFile": "pyproject.toml",
+  "mypy.targets": [
+    "barcode_api"
+  ],
 }

@@ -1,12 +1,21 @@
 from abc import ABC
-from typing import Any, Dict, Generic, Sequence, Type, TypeVar
+from typing import Any, Dict, Generic, Sequence, Type, TypeVar, Union, cast
 
-from barcode_api.config.database import AsyncSession, Base
+from barcode_api.config.database import AsyncSession, Base, SequentialIdMixin, UUIDMixin
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy import select
 
-ModelType = TypeVar("ModelType", bound=Base)
+
+class SequentialIdModel(SequentialIdMixin, Base):
+    pass
+
+
+class UUIDModel(UUIDMixin, Base):
+    pass
+
+
+ModelType = TypeVar("ModelType", bound=Union[SequentialIdModel, UUIDModel])
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
@@ -41,7 +50,16 @@ class CrudService(Generic[ModelType, CreateSchemaType, UpdateSchemaType], ABC):
         Create a new object using provided schema object
         """
         obj_in_data = jsonable_encoder(obj_in)
-        db_obj = self.model(**obj_in_data)
+
+        # I dunno why this is required, but mypy complains otherwise
+        # The reported error is:
+        # Incompatible return value type (got "Union[SequentialIdModel, UUIDModel]", expected "ModelType")
+        # I think it's because the type of db_obj is inferred as Union[SequentialIdModel, UUIDModel], but
+        # the return type is ModelType, which is a Union[SequentialIdModel, UUIDModel] with some constraints
+        # that mypy can't infer
+        # The cast is safe because the type of db_obj is always ModelType
+        db_obj = cast(ModelType, self.model(**obj_in_data))
+
         self.db_session.add(db_obj)
         await self.db_session.commit()
         await self.db_session.refresh(db_obj)

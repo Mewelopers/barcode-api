@@ -62,3 +62,6 @@ multi_line_output = 3
 
 [tool.setuptools.packages.find]
 include = ["barcode_api*"]
+
+[tool.mypy]
+exclude = ["build", "dist", "venv", "env", "node_modules"]

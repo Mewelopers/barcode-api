@@ -33,7 +33,7 @@ class _Settings(BaseSettings):
             scheme="postgresql+psycopg",
             user=values.get("POSTGRES_USER"),
             password=values.get("POSTGRES_PASSWORD"),
-            host=values.get("POSTGRES_SERVER"),
+            host=values.get("POSTGRES_SERVER") or "",
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
 
@@ -45,4 +45,5 @@ class _Settings(BaseSettings):
         env_file = ".env"
 
 
-settings = _Settings()
+# Aslo why is mypy complaining about this? It works fine.
+settings = _Settings()  # type: ignore
