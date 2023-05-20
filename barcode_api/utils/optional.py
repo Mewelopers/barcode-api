@@ -27,7 +27,7 @@ def make_optional(
             # Update pydantic ModelField to not required
             field.required = False
             # Update/append annotation
-            cls.__annotations__[name] = Optional[type_hints[name]]
+            cls.__annotations__[name] = Optional[type_hints[name]]  # type: ignore
         return cls
 
     return decorator

@@ -1,24 +1,20 @@
 import logging
 from http import HTTPStatus
 
-from barcode_api.deps.common import Repository, Service
-from barcode_api.repositories.ScrapeResultRepository import ScrapeResultRepository
-from barcode_api.schemas.products import ProductSearch
-from barcode_api.services.scraping import strategy
-from barcode_api.services.scraping.ScrapeService import BarcodeScraperService
+from barcode_api.deps.common import Service
+from barcode_api.schemas.products import ProductResponse, ProductSearch
+from barcode_api.services.crud import ProductCrud
 from fastapi import APIRouter, HTTPException
-from fastapi.responses import HTMLResponse
 
 router = APIRouter(prefix="/products", tags=["products"])
 logger = logging.getLogger(__name__)
 
 
-@router.get("/{barcode}", response_class=HTMLResponse)
+@router.get("/{barcode}")
 async def get_product(
     barcode: str,
-    scraper: BarcodeScraperService = Service(BarcodeScraperService),
-    repository: ScrapeResultRepository = Repository(ScrapeResultRepository),
-) -> str:
+    repository: ProductCrud = Service(ProductCrud),
+) -> ProductResponse:
     try:
         product_search = ProductSearch(barcode=barcode)
     except ValueError as e:
@@ -28,8 +24,19 @@ async def get_product(
             detail="Invalid barcode",
         )
 
-    async with scraper:
-        result = await scraper.scrape(product_search.barcode, strategy.BarcodeLookupStrategy())
-        await repository.create(obj_in=result)
+    result = await repository.get_by_barcode(product_search.barcode)
+    if not result:
+        raise HTTPException(
+            status_code=HTTPStatus.NOT_FOUND,
+            detail="Product not found",
+        )
 
-    return result.html
+    return ProductResponse(
+        id=result.id,
+        barcode=result.barcode,
+        name=result.name,
+        description=result.description,
+        manufacturer=result.manufacturer,
+        thumbnail_url="test",
+        barcode_image_url="test",
+    )

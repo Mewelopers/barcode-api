@@ -8,10 +8,6 @@ def Service(service: Optional[Callable[..., Any]] = None) -> Any:
     return params.Depends(service)
 
 
-def Repository(service: Optional[Callable[..., Any]] = None) -> Any:
-    return params.Depends(service)
-
-
 def DBSession() -> Any:
     """
     Dependency for getting a database session.

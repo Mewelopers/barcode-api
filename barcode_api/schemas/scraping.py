@@ -1,21 +1,14 @@
-import datetime
-
 from barcode_api.utils.optional import make_optional
 from bs4 import BeautifulSoup
-from pydantic import Field, HttpUrl, validator
+from pydantic import BaseModel, Field, HttpUrl, validator
 
-from .products import ProductSearch
+from .db_base import TrackedDbSchema
 
 
-class ScrapeResultInDB(ProductSearch):
-    class Config:
-        orm_mode = True
-
-    id: int | None = None
+class ScrapeDataCreate(BaseModel):
+    barcode: str = Field(..., min_length=8, max_length=14, regex=r"^[0-9]+$")
     url: HttpUrl
     html: str
-    timestamp: datetime.datetime = Field(default_factory=datetime.datetime.now)
-    scrape_strategy: str
 
     @validator("html", pre=True, check_fields=False)
     def validate_html(cls, v: str) -> str:
@@ -23,10 +16,13 @@ class ScrapeResultInDB(ProductSearch):
         return soup.prettify()  # type: ignore
 
 
-class ScrapeResultCreate(ScrapeResultInDB):
-    ...
+class ScrapeDataInDB(ScrapeDataCreate, TrackedDbSchema):
+    class Config:
+        orm_mode = True
+
+    id: int
 
 
-@make_optional()
-class ScrapeResultUpdate(ScrapeResultInDB):
+@make_optional(exclude=["id"])
+class ScrapeDataUpdate(ScrapeDataInDB):
     ...

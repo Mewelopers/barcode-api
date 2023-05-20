@@ -1,21 +1,12 @@
 from abc import ABC
-from typing import Any, Dict, Generic, Sequence, Type, TypeVar, Union, cast
+from typing import Any, Dict, Generic, Sequence, Type, TypeVar, cast
 
 from barcode_api.config.database import AsyncSession, Base, SequentialIdMixin, UUIDMixin
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy import select
 
-
-class SequentialIdModel(SequentialIdMixin, Base):
-    pass
-
-
-class UUIDModel(UUIDMixin, Base):
-    pass
-
-
-ModelType = TypeVar("ModelType", bound=Union[SequentialIdModel, UUIDModel])
+ModelType = TypeVar("ModelType", bound=SequentialIdMixin | UUIDMixin)
 CreateSchemaType = TypeVar("CreateSchemaType", bound=BaseModel)
 UpdateSchemaType = TypeVar("UpdateSchemaType", bound=BaseModel)
 
@@ -51,19 +42,17 @@ class CrudService(Generic[ModelType, CreateSchemaType, UpdateSchemaType], ABC):
         """
         obj_in_data = jsonable_encoder(obj_in)
 
-        # I dunno why this is required, but mypy complains otherwise
-        # The reported error is:
-        # Incompatible return value type (got "Union[SequentialIdModel, UUIDModel]", expected "ModelType")
-        # I think it's because the type of db_obj is inferred as Union[SequentialIdModel, UUIDModel], but
-        # the return type is ModelType, which is a Union[SequentialIdModel, UUIDModel] with some constraints
-        # that mypy can't infer
-        # The cast is safe because the type of db_obj is always ModelType
-        db_obj = cast(ModelType, self.model(**obj_in_data))
+        # Currently there is no intersectioon type in python
+        # meaning thet we cannot say the following
+        # The ModelType is either SequentialIdMixin or UUIDMixin
+        # however it always inherits from Base
+        # so we have to cast it to Base
+        db_obj = cast(Type[Base], self.model)(**obj_in_data)
 
         self.db_session.add(db_obj)
         await self.db_session.commit()
         await self.db_session.refresh(db_obj)
-        return db_obj
+        return cast(ModelType, db_obj)
 
     async def update(self, *, db_obj: ModelType, obj_in: UpdateSchemaType | Dict[str, Any]) -> ModelType:
         """

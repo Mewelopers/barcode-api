@@ -25,7 +25,7 @@ class Product(Base, SequentialIdMixin, TrackedMixin):
     """
 
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    decription: Mapped[str] = mapped_column(TEXT, nullable=True)
+    description: Mapped[str] = mapped_column(TEXT, nullable=True)
     manufacturer: Mapped[str] = mapped_column(String(255), nullable=True)
     barcode: Mapped[str] = mapped_column(String(255), nullable=False, unique=True, index=True)
 

@@ -3,7 +3,7 @@ import logging
 from types import TracebackType
 
 from barcode_api.config import settings
-from barcode_api.schemas.scraping import ScrapeResultCreate
+from barcode_api.schemas.scraping import ScrapeDataCreate
 from pyppeteer import launch
 from pyppeteer_stealth import stealth
 
@@ -43,12 +43,12 @@ class ScrapeService(abc.ABC):
         self.page = None
 
     @abc.abstractmethod
-    async def scrape(self, target: str, /, strategy: ScrapeStrategy) -> ScrapeResultCreate:
+    async def scrape(self, target: str, /, strategy: ScrapeStrategy) -> ScrapeDataCreate:
         ...
 
 
 class BarcodeScraperService(ScrapeService):
-    async def scrape(self, barcode: str, /, strategy: ScrapeStrategy) -> ScrapeResultCreate:
+    async def scrape(self, barcode: str, /, strategy: ScrapeStrategy) -> ScrapeDataCreate:
         if self.browser is None or self.page is None:
             raise RuntimeError("ScrapeService not initialized")
         url = strategy.target_url(barcode)
@@ -56,4 +56,4 @@ class BarcodeScraperService(ScrapeService):
 
         html = await strategy.scrape(self.page)
 
-        return ScrapeResultCreate(barcode=barcode, scrape_strategy=strategy.name(), url=url, html=html)
+        return ScrapeDataCreate(barcode=barcode, scrape_strategy=strategy.name(), url=url, html=html)
