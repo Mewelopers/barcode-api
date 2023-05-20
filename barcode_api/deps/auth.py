@@ -4,7 +4,7 @@ from barcode_api.config.settings import settings
 from barcode_api.schemas import AuthRole, AuthScopes, OIDCToken, User
 from fastapi import Depends, HTTPException, params, status
 from fastapi.security import SecurityScopes
-from fastapi_oidc import get_auth
+from fastapi_oidc import get_auth  # type: ignore
 
 authenticate_user = get_auth(
     client_id=settings.OIDC_CLIENT_ID,

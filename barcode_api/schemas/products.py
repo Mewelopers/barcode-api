@@ -1,4 +1,4 @@
-import barcode
+import barcode  # type: ignore
 from pydantic import BaseModel, Field, validator
 
 

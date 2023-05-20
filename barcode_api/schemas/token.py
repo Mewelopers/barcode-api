@@ -1,4 +1,4 @@
-from fastapi_oidc import IDToken
+from fastapi_oidc import IDToken  # type: ignore
 from pydantic import Extra, validator
 
 from .auth import AuthRole, AuthScopes
