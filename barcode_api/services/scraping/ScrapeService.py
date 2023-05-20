@@ -1,18 +1,24 @@
-import abc
 import logging
 from types import TracebackType
+from typing import cast
 
 from barcode_api.config import settings
+from barcode_api.deps.common import Service
+from barcode_api.schemas.products import ProductCreate
 from barcode_api.schemas.scraping import ScrapeDataCreate
-from pyppeteer import launch
-from pyppeteer_stealth import stealth
+from barcode_api.services.crud import ScrapeDataCrud
+from pyppeteer import browser, launch  # type: ignore
+from pyppeteer_stealth import stealth  # type: ignore
 
-from .strategy import ScrapeStrategy
+from .html_parser import ProductHTMLParser, Selectors
 
 logger = logging.getLogger(__name__)
 
 
-class ScrapeService(abc.ABC):
+class ScrapeService:
+    def __init__(self, scrape_crud: ScrapeDataCrud = Service(ScrapeDataCrud)) -> None:
+        self.scrape_crud = scrape_crud
+
     async def setup(self) -> None:
         self.browser = await launch(
             headless=True,
@@ -38,22 +44,37 @@ class ScrapeService(abc.ABC):
         return None
 
     async def dispose(self) -> None:
-        await self.browser.close()
+        await cast(browser.Browser, self.browser).close()
         self.browser = None
         self.page = None
 
-    @abc.abstractmethod
-    async def scrape(self, target: str, /, strategy: ScrapeStrategy) -> ScrapeDataCreate:
-        ...
+    @staticmethod
+    def _url(barcode: str) -> str:
+        return f"https://www.barcodelookup.com/{barcode}"
 
+    async def _wait_for_page_load(self) -> None:
+        """Wait for the footer to load, which is the last element on the page"""
+        await cast(browser.Page, self.page).waitForSelector(Selectors.footer)
 
-class BarcodeScraperService(ScrapeService):
-    async def scrape(self, barcode: str, /, strategy: ScrapeStrategy) -> ScrapeDataCreate:
+    async def _save_html(self, barcode: str) -> str:
+        html = await cast(browser.Page, self.page).content()
+
+        scrape_data = ScrapeDataCreate(
+            barcode=barcode,
+            html=html,
+            url=self._url(barcode),
+        )
+        await self.scrape_crud.create(obj_in=scrape_data)
+
+        return html
+
+    async def scrape(self, barcode: str) -> ProductCreate:
         if self.browser is None or self.page is None:
             raise RuntimeError("ScrapeService not initialized")
-        url = strategy.target_url(barcode)
-        await self.page.goto(url)
+        await self.page.goto(self._url(barcode))
+        await self._wait_for_page_load()
 
-        html = await strategy.scrape(self.page)
+        html = await self._save_html(barcode)
+        parser = ProductHTMLParser(html)
 
-        return ScrapeDataCreate(barcode=barcode, scrape_strategy=strategy.name(), url=url, html=html)
+        return await parser.collect()
