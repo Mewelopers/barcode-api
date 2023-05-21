@@ -1,3 +1,4 @@
+import uuid
 from abc import ABC
 from typing import Any, Dict, Generic, Sequence, Type, TypeVar, cast
 
@@ -21,7 +22,7 @@ class CrudService(Generic[ModelType, CreateSchemaType, UpdateSchemaType], ABC):
         self.model = model
         self.db_session = session
 
-    async def get(self, id: int | str) -> ModelType | None:
+    async def get(self, id: int | uuid.UUID) -> ModelType | None:
         """
         Get a single object by id, can be a numeric id or a UUID string
         """

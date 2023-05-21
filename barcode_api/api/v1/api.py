@@ -1,9 +1,9 @@
 from barcode_api.deps.auth import JKPBasicAuth
 from fastapi import APIRouter
 
-from .routes import admin, products, public, user
+from .routes import admin, image, products, public, user
 
-PUBLIC_ROUTES = [public]
+PUBLIC_ROUTES = [public, image]
 
 AUTH_REQUIRED_ROUTES = [user, admin, products]
 

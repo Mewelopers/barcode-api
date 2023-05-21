@@ -27,7 +27,8 @@ dependencies = [
   "beautifulsoup4", # Scraping dependencies
   "pyppeteer",
   "pyppeteer_stealth",
-  "httpx"
+  "httpx",
+  "python-magic"
 ]
 name = "barcode_api"
 readme = "README.md"
