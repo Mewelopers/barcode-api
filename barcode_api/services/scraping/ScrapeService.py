@@ -75,6 +75,6 @@ class ScrapeService:
         await self._wait_for_page_load()
 
         html = await self._save_html(barcode)
-        parser = ProductHTMLParser(html)
+        parser = ProductHTMLParser(html, barcode)
 
         return await parser.collect()

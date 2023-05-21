@@ -27,6 +27,7 @@ dependencies = [
   "beautifulsoup4", # Scraping dependencies
   "pyppeteer",
   "pyppeteer_stealth",
+  "httpx"
 ]
 name = "barcode_api"
 readme = "README.md"
@@ -44,7 +45,8 @@ dev = [
   "pip-tools",
   "isort",
   "sqlalchemy-stubs",
-  "types-beautifulsoup4"
+  "types-beautifulsoup4",
+  "pytest-asyncio"
 ]
 
 [tool.ruff]

@@ -26,4 +26,9 @@
   "mypy.targets": [
     "barcode_api"
   ],
+  "python.testing.pytestArgs": [
+    "barcode_api"
+  ],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true,
 }
