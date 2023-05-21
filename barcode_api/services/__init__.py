@@ -1,2 +1,2 @@
 # ruff: noqa: F401
-from . import mixin
+from .crud.crud_service import CrudService

@@ -2,7 +2,7 @@ from logging.config import fileConfig
 
 from alembic import context
 from barcode_api.config import database  # noqa: E402
-from barcode_api.config import settings
+from barcode_api.config.settings import settings
 from barcode_api.models import *  # noqa: F401, F403, E402
 from sqlalchemy import engine_from_config, pool
 

@@ -1,9 +1,9 @@
 from typing import Any, Dict
 
-from pydantic import BaseSettings, PostgresDsn, validator
+from pydantic import BaseSettings, FilePath, PostgresDsn, validator
 
 
-class Settings(BaseSettings):
+class _Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
     # 60 minutes * 24 hours * 8 days = 8 days
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
@@ -29,13 +29,21 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return v
         return PostgresDsn.build(
-            scheme="postgresql",
+            # Required +psycopg in order to use psycopg3
+            scheme="postgresql+psycopg",
             user=values.get("POSTGRES_USER"),
             password=values.get("POSTGRES_PASSWORD"),
-            host=values.get("POSTGRES_SERVER"),
+            host=values.get("POSTGRES_SERVER") or "",
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
+
+    # Scraper
+    BROWSER_PATH: FilePath
 
     class Config:
         case_sensitive = True
         env_file = ".env"
+
+
+# Aslo why is mypy complaining about this? It works fine.
+settings = _Settings()  # type: ignore
