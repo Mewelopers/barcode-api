@@ -6,7 +6,7 @@ from sqlalchemy import TEXT, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if typing.TYPE_CHECKING:
-    from .ImageData import ImageData
+    from .image_data import ImageData
 
 
 class Product(Base, SequentialIdMixin, TrackedMixin):

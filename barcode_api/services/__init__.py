@@ -1,2 +1,2 @@
 # ruff: noqa: F401
-from .crud.CrudService import CrudService
+from .crud.crud_service import CrudService

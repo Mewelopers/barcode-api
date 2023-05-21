@@ -5,8 +5,8 @@ from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if typing.TYPE_CHECKING:
-    from .ShoppingList import ShoppingList
-    from .Product import Product
+    from .shopping_list import ShoppingList
+    from .product import Product
 
 
 class ShoppingListItem(Base, SequentialIdMixin, TrackedMixin):

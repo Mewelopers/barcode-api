@@ -1,12 +1,12 @@
 from barcode_api.config.database import AsyncSession
 from barcode_api.deps.common import DBSession, Service
-from barcode_api.models.ImageData import ImageData
-from barcode_api.models.Product import Product
+from barcode_api.models.image_data import ImageData
+from barcode_api.models.product import Product
 from barcode_api.schemas.products import ProductCreate, ProductUpdate
 from barcode_api.services.scraping import ScrapeService
 from sqlalchemy import select
 
-from .CrudService import CrudService
+from .crud_service import CrudService
 
 
 class ProductCrud(CrudService[Product, ProductCreate, ProductUpdate]):

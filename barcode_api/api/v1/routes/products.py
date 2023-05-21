@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 from barcode_api.deps.common import Service
 from barcode_api.schemas.products import ProductResponse, ProductSearch
-from barcode_api.services.crud.ProductCrud import ProductCrud
+from barcode_api.services.crud.product_crud import ProductCrud
 from fastapi import APIRouter, HTTPException
 
 router = APIRouter(prefix="/products", tags=["products"])

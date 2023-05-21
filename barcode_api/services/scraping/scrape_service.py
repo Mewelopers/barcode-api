@@ -6,7 +6,7 @@ from barcode_api.config import settings
 from barcode_api.deps.common import Service
 from barcode_api.schemas.products import ProductCreate
 from barcode_api.schemas.scraping import ScrapeDataCreate
-from barcode_api.services.crud.ScrapeDataCrud import ScrapeDataCrud
+from barcode_api.services.crud.scrape_data_crud import ScrapeDataCrud
 from pyppeteer import browser, launch  # type: ignore
 from pyppeteer_stealth import stealth  # type: ignore
 

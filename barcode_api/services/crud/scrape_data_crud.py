@@ -4,7 +4,7 @@ from barcode_api.models import ScrapeData
 from barcode_api.schemas.scraping import ScrapeDataCreate, ScrapeDataUpdate
 from sqlalchemy import select
 
-from .CrudService import CrudService
+from .crud_service import CrudService
 
 
 class ScrapeDataCrud(CrudService[ScrapeData, ScrapeDataCreate, ScrapeDataUpdate]):

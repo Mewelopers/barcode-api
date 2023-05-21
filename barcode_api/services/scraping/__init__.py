@@ -1,2 +1,3 @@
 # ruff: noqa: F401
-from .ScrapeService import ScrapeService
+from .exceptions import ParserException, TagNotFoundException
+from .scrape_service import ScrapeService

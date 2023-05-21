@@ -6,7 +6,7 @@ from sqlalchemy import Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if typing.TYPE_CHECKING:
-    from .ShoppingListItem import ShoppingListItem
+    from .shopping_list_item import ShoppingListItem
 
 
 class ShoppingList(Base, SequentialIdMixin, TrackedMixin):
