@@ -22,7 +22,7 @@ class ShoppingListItem(Base, SequentialIdMixin, TrackedMixin):
     """
 
     name: Mapped[str] = mapped_column(String(255), nullable=False)
-    list_id: Mapped[str] = mapped_column(ForeignKey("ShoppingList.id"), nullable=False)
+    list_id: Mapped[int] = mapped_column(ForeignKey("ShoppingList.id"), nullable=False)
     list: Mapped["ShoppingList"] = relationship(
         "ShoppingList", foreign_keys=[list_id], uselist=False, back_populates="items"
     )

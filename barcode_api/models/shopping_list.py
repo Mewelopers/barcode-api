@@ -19,7 +19,7 @@ class ShoppingList(Base, SequentialIdMixin, TrackedMixin):
         items (List[ShoppingListItem]): The list of items in the shopping list.
     """
 
-    owner_user_id: Mapped[int] = mapped_column(Integer, nullable=False, index=True)
+    owner_user_id: Mapped[str] = mapped_column(String, nullable=False, index=True)
     list_title: Mapped[str] = mapped_column(String(255), nullable=False)
 
     items: Mapped[List["ShoppingListItem"]] = relationship("ShoppingListItem", back_populates="list")

@@ -28,6 +28,9 @@ class ProductSearch(BaseModel):
             case _:
                 raise ValueError("Invalid barcode length")
 
+        if v != checker(v).get_fullcode():
+            raise ValueError("Invalid barcode")
+
         return checker(v).get_fullcode()  # type: ignore
 
 

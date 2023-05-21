@@ -1,15 +1,15 @@
 from logging.config import fileConfig
 
+import barcode_api.models  # noqa
 from alembic import context
 from barcode_api.config import database  # noqa: E402
 from barcode_api.config.settings import settings
-from barcode_api.models import *  # noqa: F401, F403, E402
 from sqlalchemy import engine_from_config, pool
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-config.set_main_option("sqlalchemy.url", settings.SQLALCHEMY_DATABASE_URI)
+config.set_main_option("sqlalchemy.url", settings.SQLALCHEMY_DATABASE_URI)  # type: ignore
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
@@ -44,6 +44,9 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        compare_type=True,
+        compare_server_default=True,
+        include_schemas=True,
     )
 
     with context.begin_transaction():
