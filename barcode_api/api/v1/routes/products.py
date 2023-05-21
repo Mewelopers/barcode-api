@@ -3,7 +3,7 @@ from http import HTTPStatus
 
 from barcode_api.deps.common import Service
 from barcode_api.schemas.products import ProductResponse, ProductSearch
-from barcode_api.services.crud import ProductCrud
+from barcode_api.services.crud.ProductCrud import ProductCrud
 from fastapi import APIRouter, HTTPException
 
 router = APIRouter(prefix="/products", tags=["products"])
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 @router.get("/{barcode}")
 async def get_product(
     barcode: str,
-    repository: ProductCrud = Service(ProductCrud),
+    productCrud: ProductCrud = Service(ProductCrud),
 ) -> ProductResponse:
     try:
         product_search = ProductSearch(barcode=barcode)
@@ -24,7 +24,7 @@ async def get_product(
             detail="Invalid barcode",
         )
 
-    result = await repository.get_by_barcode(product_search.barcode)
+    result = await productCrud.find_online(product_search.barcode)
     if not result:
         raise HTTPException(
             status_code=HTTPStatus.NOT_FOUND,

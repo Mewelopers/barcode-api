@@ -32,7 +32,7 @@ class ProdyctMedia(BaseModel):
 
 class ProductCommon(ProductSearch):
     name: str = Field(..., min_length=1, max_length=255)
-    description: str | None = Field(None, min_length=1, max_length=255)
+    description: str | None = Field(None, min_length=1, max_length=10000)
     manufacturer: str | None = Field(None, min_length=1, max_length=255)
 
 
