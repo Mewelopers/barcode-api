@@ -10,6 +10,7 @@ from barcode_api.services.crud.scrape_data_crud import ScrapeDataCrud
 from pyppeteer import browser, launch  # type: ignore
 from pyppeteer_stealth import stealth  # type: ignore
 
+from .exceptions import ProductNotFoundException, WebsiteNavigationException
 from .html_parser import ProductHTMLParser, Selectors
 
 logger = logging.getLogger(__name__)
@@ -54,7 +55,7 @@ class ScrapeService:
 
     async def _wait_for_page_load(self) -> None:
         """Wait for the footer to load, which is the last element on the page"""
-        await cast(browser.Page, self.page).waitForSelector(Selectors.footer)
+        await cast(browser.Page, self.page).waitForSelector(Selectors.footer, timeout=5000)
 
     async def _save_html(self, barcode: str) -> str:
         html = await cast(browser.Page, self.page).content()
@@ -72,9 +73,15 @@ class ScrapeService:
         if self.browser is None or self.page is None:
             raise RuntimeError("ScrapeService not initialized")
         await self.page.goto(self._url(barcode))
-        await self._wait_for_page_load()
+        try:
+            await self._wait_for_page_load()
+        except TimeoutError as e:
+            raise WebsiteNavigationException("Website navigation timed out") from e
 
         html = await self._save_html(barcode)
         parser = ProductHTMLParser(html, barcode)
 
-        return await parser.collect()
+        try:
+            return await parser.collect()
+        except ProductNotFoundException as e:
+            raise ProductNotFoundException(barcode) from e

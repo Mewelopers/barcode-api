@@ -1,12 +1,17 @@
+import logging
+
 from barcode_api.config.database import AsyncSession
 from barcode_api.deps.common import DBSession, Service
 from barcode_api.models.image_data import ImageData
 from barcode_api.models.product import Product
 from barcode_api.schemas.products import ProductCreate, ProductUpdate
 from barcode_api.services.scraping import ScrapeService
+from barcode_api.services.scraping.exceptions import ParserException
 from sqlalchemy import select
 
 from .crud_service import CrudService
+
+logger = logging.getLogger(__name__)
 
 
 class ProductCrud(CrudService[Product, ProductCreate, ProductUpdate]):
@@ -55,6 +60,10 @@ class ProductCrud(CrudService[Product, ProductCreate, ProductUpdate]):
             return res
 
         async with self.scrape_service as scrape_service:
-            scrape_data = await scrape_service.scrape(barcode)
+            try:
+                scrape_data = await scrape_service.scrape(barcode)
+            except ParserException as e:
+                logging.info(f"Error scraping barcode: {barcode}, error: %s", e)
+                return None
             obj = await self.create(obj_in=scrape_data)
             return obj
