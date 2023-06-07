@@ -31,6 +31,11 @@ class ProductBarcode(BaseModel):
         return checker(v).get_fullcode()  # type: ignore
 
 
+class ProductSearch(BaseModel):
+    limit: int = Field(10, ge=1, le=100)
+    query: str | None = None
+
+
 class ProductInformation(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     description: str | None = Field(None, min_length=1, max_length=10000)
@@ -60,7 +65,7 @@ class ProductInDb(ProductCreate, SequentialId, CreatedAtUpdatedAt, ProductMedia)
         orm_mode = True
 
 
-class ProductResponse(ProductInformation, ProductMedia):
+class ProductResponse(ProductInformation, ProductMedia, ProductBarcode):
     """
     Represents the final Product Response
     """

@@ -26,7 +26,7 @@ lint:
 
 typecheck:
 	@echo "Type checking code"
-	@mypy . || true
+	@mypy barcode_api || true
 
 sort:
 	@echo "Sorting imports"
