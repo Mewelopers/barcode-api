@@ -14,11 +14,15 @@ Exceptions:
 - TagNotFoundException: An exception raised when a required HTML tag is not found.
 
 """
+import logging
+
 import httpx
-from barcode_api.schemas.products import ProductCreate
 from bs4 import BeautifulSoup
 
+from barcode_api.schemas.products import ProductScrapeResult
 from .exceptions import TagNotFoundException
+
+logger = logging.getLogger(__name__)
 
 
 class Selectors:
@@ -89,10 +93,11 @@ class ProductHTMLParser:
         """
         element = self.soap.select_one(Selectors.barcode_img)
         if element is None:
+            logger.warning(f"Could not find barcode image for barcode {self.barcode}")
             return None
         # Can be converted to an PNG image, but it it actually needed?
         # can be mimified
-        return element.prettify().encode()
+        return bytes(element.prettify(), encoding="utf-8")
 
     def _get_product_meta_data(self, target_selector: str) -> dict | None:
         """
@@ -103,6 +108,7 @@ class ProductHTMLParser:
         """
         collection = self.soap.select_one(target_selector)
         if collection is None:
+            logger.warning(f"Could not find product metadata for barcode {self.barcode}")
             return None
 
         entries = collection.select("div.product-text-label")
@@ -135,6 +141,7 @@ class ProductHTMLParser:
         tags = self._get_product_meta_data(Selectors.product_meta_data)
 
         if tags is None:
+            logger.warning(f"Could not find product description for barcode {self.barcode}")
             return None
 
         return tags.get("description", None)
@@ -142,6 +149,7 @@ class ProductHTMLParser:
     def _get_product_manufacturer(self) -> str | None:
         tags = self._get_product_meta_data(Selectors.product_details)
         if tags is None:
+            logger.warning(f"Could not find product manufacturer for barcode {self.barcode}")
             return None
 
         return tags.get("manufacturer", None)
@@ -156,27 +164,32 @@ class ProductHTMLParser:
         element = self.soap.select_one(Selectors.thumbnail)
 
         if element is None:
+            logger.warning(f"Could not find product thumbnail for barcode {self.barcode}")
             return None
 
         src = element.attrs.get("src", None)
 
         if src is None:
+            logger.warning(f"Could not find src attribute for product thumbnail for barcode {self.barcode}")
             return None
 
         async with httpx.AsyncClient() as client:
             response = await client.get(src)
             if response.status_code != 200:
+                logger.warning(
+                    f"Could not download product thumbnail {self.barcode}, status code {response.status_code}"
+                )
                 return None
             return response.content
 
-    async def collect(self) -> ProductCreate:
+    async def collect(self) -> ProductScrapeResult:
         """
         Collects the product information from the HTML data.
 
         Returns:
-        - A ProductCreate object containing the extracted product information.
+        - A ProductScrapeResult object containing the extracted product information.
         """
-        return ProductCreate(
+        return ProductScrapeResult(
             barcode=self.barcode,
             name=self._get_product_name(),
             barcode_image=self._get_barcode_image(),

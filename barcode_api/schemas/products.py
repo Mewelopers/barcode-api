@@ -1,11 +1,14 @@
 import barcode  # type: ignore
-from barcode_api.utils.optional import make_optional
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, UUID4
 
-from .db_base import TrackedDbSchema
+from .db_base import CreatedAtUpdatedAt, SequentialId
 
 
-class ProductSearch(BaseModel):
+class ProductBarcode(BaseModel):
+    """
+    Schema for validating the product barcode
+    """
+
     barcode: str = Field(..., min_length=8, max_length=14, regex=r"^[0-9]+$")
 
     @validator("barcode")
@@ -22,42 +25,60 @@ class ProductSearch(BaseModel):
             case _:
                 raise ValueError("Invalid barcode length")
 
+        if v != checker(v).get_fullcode():
+            raise ValueError("Invalid barcode")
+
         return checker(v).get_fullcode()  # type: ignore
 
 
-class ProdyctMedia(BaseModel):
-    thumbnail: bytes | None = Field(None)
-    barcode_image: bytes | None = Field(None)
-
-
-class ProductCommon(ProductSearch):
+class ProductInformation(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     description: str | None = Field(None, min_length=1, max_length=10000)
     manufacturer: str | None = Field(None, min_length=1, max_length=255)
 
 
-class ProductCreate(ProductCommon, ProdyctMedia):
-    ...
+class ProductMedia(BaseModel):
+    thumbnail_uuid: UUID4 | None = Field(None)
+    barcode_image_uuid: UUID4 | None = Field(None)
 
 
-class ProductResponse(ProductCommon):
-    class Config:
-        orm_mode = True
-
-    id: int
-    thumbnail_url: str | None = Field(None)
-    barcode_image_url: str | None = Field(None)
-
-
-@make_optional(exclude=["id"])
-class ProductUpdate(ProductCreate):
-    id: int
-
-
-class ProductInDb(ProductCreate, TrackedDbSchema):
-    id: int
-    thumbnail_uuid: str | None = Field(None)
-    barcode_image_uuid: str | None = Field(None)
+class ProductCreate(ProductBarcode, ProductInformation):
+    """
+    Schema used when creating a product
+    """
 
     class Config:
         orm_mode = True
+
+
+class ProductInDb(ProductCreate, SequentialId, CreatedAtUpdatedAt, ProductMedia):
+    """
+    Represents a product in the database
+    """
+
+    class Config:
+        orm_mode = True
+
+
+class ProductResponse(ProductInformation, ProductMedia):
+    """
+    Represents the final Product Response
+    """
+
+    class Config:
+        orm_mode = True
+
+    # For media
+    thumbnail_url: str | None
+    barcode_image_url: str | None
+
+
+class ProductUpdate(ProductBarcode, SequentialId):
+    name: str | None
+    description: str | None
+    manufacturer: str | None
+
+
+class ProductScrapeResult(ProductBarcode, ProductInformation):
+    barcode_image: bytes | None = None
+    thumbnail: bytes | None = None

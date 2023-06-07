@@ -44,10 +44,11 @@ dev = [
   "pytest-cov",
   "pytest-mock",
   "pip-tools",
-  "isort",
   "sqlalchemy-stubs",
   "types-beautifulsoup4",
-  "pytest-asyncio"
+  "pytest-asyncio",
+  "mkdocs-material",
+  "mkdocstrings[python]"
 ]
 
 [tool.ruff]
@@ -58,11 +59,6 @@ target-version = "py310"
 line-length = 120
 target-version = ["py310"]
 
-[tool.isort]
-force_grid_wrap = 0
-include_trailing_comma = true
-line_length = 120
-multi_line_output = 3
 
 [tool.setuptools.packages.find]
 include = ["barcode_api*"]

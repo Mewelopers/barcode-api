@@ -7,7 +7,9 @@
 alembic==1.10.3
     # via barcode-api (pyproject.toml)
 anyio==3.6.2
-    # via starlette
+    # via
+    #   httpcore
+    #   starlette
 appdirs==1.4.4
     # via pyppeteer
 beautifulsoup4==4.12.2
@@ -20,6 +22,8 @@ cachetools==5.3.0
     # via fastapi-oidc
 certifi==2022.12.7
     # via
+    #   httpcore
+    #   httpx
     #   pyppeteer
     #   requests
 cffi==1.15.1
@@ -31,8 +35,13 @@ charset-normalizer==3.1.0
 click==8.1.3
     # via
     #   black
+    #   mkdocs
     #   pip-tools
     #   uvicorn
+colorama==0.4.6
+    # via
+    #   griffe
+    #   mkdocs-material
 coverage[toml]==7.2.3
     # via pytest-cov
 cryptography==40.0.1
@@ -55,27 +64,70 @@ fastapi-oidc==0.0.9
     # via barcode-api (pyproject.toml)
 filelock==3.11.0
     # via virtualenv
+ghp-import==2.1.0
+    # via mkdocs
 greenlet==2.0.2
     # via sqlalchemy
+griffe==0.29.0
+    # via mkdocstrings-python
 h11==0.14.0
-    # via uvicorn
+    # via
+    #   httpcore
+    #   uvicorn
+httpcore==0.17.2
+    # via httpx
+httpx==0.24.1
+    # via barcode-api (pyproject.toml)
 identify==2.5.22
     # via pre-commit
 idna==3.4
     # via
     #   anyio
     #   email-validator
+    #   httpx
     #   requests
 importlib-metadata==6.6.0
     # via pyppeteer
 iniconfig==2.0.0
     # via pytest
-isort==5.12.0
-    # via barcode-api (pyproject.toml)
+jinja2==3.1.2
+    # via
+    #   mkdocs
+    #   mkdocs-material
+    #   mkdocstrings
 mako==1.2.4
     # via alembic
+markdown==3.3.7
+    # via
+    #   mkdocs
+    #   mkdocs-autorefs
+    #   mkdocs-material
+    #   mkdocstrings
+    #   pymdown-extensions
 markupsafe==2.1.2
-    # via mako
+    # via
+    #   jinja2
+    #   mako
+    #   mkdocstrings
+mergedeep==1.3.4
+    # via mkdocs
+mkdocs==1.4.3
+    # via
+    #   mkdocs-autorefs
+    #   mkdocs-material
+    #   mkdocstrings
+mkdocs-autorefs==0.4.1
+    # via mkdocstrings
+mkdocs-material==9.1.15
+    # via barcode-api (pyproject.toml)
+mkdocs-material-extensions==1.1.1
+    # via mkdocs-material
+mkdocstrings[python]==0.22.0
+    # via
+    #   barcode-api (pyproject.toml)
+    #   mkdocstrings-python
+mkdocstrings-python==1.1.2
+    # via mkdocstrings
 mypy==1.2.0
     # via
     #   barcode-api (pyproject.toml)
@@ -90,6 +142,7 @@ packaging==23.0
     # via
     #   black
     #   build
+    #   mkdocs
     #   pytest
 pathspec==0.11.1
     # via black
@@ -118,6 +171,12 @@ pydantic[email]==1.10.7
     #   fastapi-oidc
 pyee==8.2.2
     # via pyppeteer
+pygments==2.15.1
+    # via mkdocs-material
+pymdown-extensions==10.0.1
+    # via
+    #   mkdocs-material
+    #   mkdocstrings
 pyppeteer==1.0.2
     # via barcode-api (pyproject.toml)
 pyppeteer-stealth==2.7.4
@@ -127,32 +186,54 @@ pyproject-hooks==1.0.0
 pytest==7.3.0
     # via
     #   barcode-api (pyproject.toml)
+    #   pytest-asyncio
     #   pytest-cov
     #   pytest-mock
+pytest-asyncio==0.21.0
+    # via barcode-api (pyproject.toml)
 pytest-cov==4.0.0
     # via barcode-api (pyproject.toml)
 pytest-mock==3.10.0
     # via barcode-api (pyproject.toml)
 python-barcode==0.14.0
     # via barcode-api (pyproject.toml)
+python-dateutil==2.8.2
+    # via ghp-import
 python-dotenv==1.0.0
     # via barcode-api (pyproject.toml)
 python-jose[cryptography]==3.3.0
     # via fastapi-oidc
+python-magic==0.4.27
+    # via barcode-api (pyproject.toml)
 python-multipart==0.0.6
     # via barcode-api (pyproject.toml)
 pyyaml==6.0
-    # via pre-commit
+    # via
+    #   mkdocs
+    #   pre-commit
+    #   pymdown-extensions
+    #   pyyaml-env-tag
+pyyaml-env-tag==0.1
+    # via mkdocs
+regex==2023.6.3
+    # via mkdocs-material
 requests==2.29.0
-    # via fastapi-oidc
+    # via
+    #   fastapi-oidc
+    #   mkdocs-material
 rsa==4.9
     # via python-jose
 ruff==0.0.261
     # via barcode-api (pyproject.toml)
 six==1.16.0
-    # via ecdsa
+    # via
+    #   ecdsa
+    #   python-dateutil
 sniffio==1.3.0
-    # via anyio
+    # via
+    #   anyio
+    #   httpcore
+    #   httpx
 soupsieve==2.4.1
     # via beautifulsoup4
 sqlalchemy[asyncio]==2.0.13
@@ -173,6 +254,10 @@ tomli==2.0.1
     #   pytest
 tqdm==4.65.0
     # via pyppeteer
+types-beautifulsoup4==4.12.0.5
+    # via barcode-api (pyproject.toml)
+types-html5lib==1.1.11.14
+    # via types-beautifulsoup4
 typing-extensions==4.5.0
     # via
     #   alembic
@@ -189,6 +274,8 @@ uvicorn==0.21.1
     # via barcode-api (pyproject.toml)
 virtualenv==20.21.0
     # via pre-commit
+watchdog==3.0.0
+    # via mkdocs
 websockets==10.4
     # via pyppeteer
 wheel==0.40.0
