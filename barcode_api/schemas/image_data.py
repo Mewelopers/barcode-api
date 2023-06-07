@@ -1,22 +1,26 @@
-import uuid
+from pydantic import BaseModel, UUID4
 
-from barcode_api.utils.optional import make_optional
-
-from .db_base import TrackedDbSchema
+from .db_base import CreatedAtUpdatedAt
 
 
-class ImageDataInDb(TrackedDbSchema):
-    class Config:
-        orm_mode = True
+class ImageDataInDb(CreatedAtUpdatedAt):
+    """Represents the ImageData object in the database.
 
-    id: uuid.UUID
+    Args:
+        TrackedDbSchema (_type_): _description_
+    """
+
+    id: UUID4
     data: bytes
 
 
-class ImageDataCreate(ImageDataInDb):
-    pass
+class ImageDataCreate(BaseModel):
+    """Schema for creating an ImageData object."""
+
+    data: bytes
 
 
-@make_optional(exclude=["id"])
-class ImageDataUpdate(ImageDataInDb):
-    pass
+class ImageDataUpdate(BaseModel):
+    """Schema for updating an ImageData object."""
+
+    data: bytes

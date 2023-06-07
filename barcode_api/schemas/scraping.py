@@ -2,7 +2,7 @@ from barcode_api.utils.optional import make_optional
 from bs4 import BeautifulSoup
 from pydantic import BaseModel, Field, validator
 
-from .db_base import TrackedDbSchema
+from .db_base import CreatedAtUpdatedAt
 
 
 class ScrapeDataCreate(BaseModel):
@@ -16,7 +16,7 @@ class ScrapeDataCreate(BaseModel):
         return soup.prettify()  # type: ignore
 
 
-class ScrapeDataInDB(ScrapeDataCreate, TrackedDbSchema):
+class ScrapeDataInDB(ScrapeDataCreate, CreatedAtUpdatedAt):
     class Config:
         orm_mode = True
 

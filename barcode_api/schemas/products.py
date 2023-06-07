@@ -1,15 +1,12 @@
-import uuid
-
 import barcode  # type: ignore
-from barcode_api.utils.optional import make_optional
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, validator, UUID4
 
-from .db_base import TrackedDbSchema
+from .db_base import CreatedAtUpdatedAt, SequentialId
 
 
-class ProductSearch(BaseModel):
+class ProductBarcode(BaseModel):
     """
-    Base schema used when searching for a product
+    Schema for validating the product barcode
     """
 
     barcode: str = Field(..., min_length=8, max_length=14, regex=r"^[0-9]+$")
@@ -34,64 +31,54 @@ class ProductSearch(BaseModel):
         return checker(v).get_fullcode()  # type: ignore
 
 
-class ProductMedia(BaseModel):
-    """
-    Schema used when interacting with image fields of a product
-    """
-
-    thumbnail: bytes | None = Field(None)
-    barcode_image: bytes | None = Field(None)
-
-
-class ProductMediaIds(BaseModel):
-    """
-    Id of the media files associated with a product
-    """
-
-    class Config:
-        orm_mode = True
-
-    thumbnail_uuid: uuid.UUID | None = Field(None)
-    barcode_image_uuid: uuid.UUID | None = Field(None)
-
-
-class ProductCommon(ProductSearch):
-    """
-    Common information about a product
-    """
-
-    class Config:
-        orm_mode = True
-
+class ProductInformation(BaseModel):
     name: str = Field(..., min_length=1, max_length=255)
     description: str | None = Field(None, min_length=1, max_length=10000)
     manufacturer: str | None = Field(None, min_length=1, max_length=255)
 
 
-class ProductCreate(ProductCommon, ProductMedia):
+class ProductMedia(BaseModel):
+    thumbnail_uuid: UUID4 | None = Field(None)
+    barcode_image_uuid: UUID4 | None = Field(None)
+
+
+class ProductCreate(ProductBarcode, ProductInformation):
     """
     Schema used when creating a product
     """
 
-    ...
-
-
-class ProductResponse(ProductCommon, ProductMediaIds):
     class Config:
         orm_mode = True
 
-    id: int
+
+class ProductInDb(ProductCreate, SequentialId, CreatedAtUpdatedAt, ProductMedia):
+    """
+    Represents a product in the database
+    """
+
+    class Config:
+        orm_mode = True
+
+
+class ProductResponse(ProductInformation, ProductMedia):
+    """
+    Represents the final Product Response
+    """
+
+    class Config:
+        orm_mode = True
+
+    # For media
     thumbnail_url: str | None
     barcode_image_url: str | None
 
 
-@make_optional(exclude=["id"])
-class ProductUpdate(ProductCreate):
-    id: int
+class ProductUpdate(ProductBarcode, SequentialId):
+    name: str | None
+    description: str | None
+    manufacturer: str | None
 
 
-class ProductInDb(ProductCreate, TrackedDbSchema, ProductMediaIds):
-    class Config:
-        orm_mode = True
-
-    id: int
+class ProductScrapeResult(ProductBarcode, ProductInformation):
+    barcode_image: bytes | None = None
+    thumbnail: bytes | None = None

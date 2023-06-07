@@ -1,9 +1,10 @@
-from barcode_api.config.database import Base, TrackedMixin, UUIDMixin
 from sqlalchemy import LargeBinary
 from sqlalchemy.orm import Mapped, mapped_column
 
+from barcode_api.config.database import Base, CreatedAtUpdatedAtMixin, UUIDMixin
 
-class ImageData(Base, UUIDMixin, TrackedMixin):
+
+class ImageData(Base, UUIDMixin, CreatedAtUpdatedAtMixin):
     """
     A model representing binary image data.
 

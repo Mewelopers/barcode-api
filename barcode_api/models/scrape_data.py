@@ -1,9 +1,10 @@
-from barcode_api.config.database import Base, SequentialIdMixin, TrackedMixin
 from sqlalchemy import Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column
 
+from barcode_api.config.database import Base, SequentialIdMixin, CreatedAtUpdatedAtMixin
 
-class ScrapeData(Base, SequentialIdMixin, TrackedMixin):
+
+class ScrapeData(Base, SequentialIdMixin, CreatedAtUpdatedAtMixin):
     """
     A model representing scraped data.
 

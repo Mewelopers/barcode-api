@@ -1,6 +1,7 @@
 import typing
+from typing import Optional
 
-from barcode_api.config.database import Base, SequentialIdMixin, TrackedMixin
+from barcode_api.config.database import Base, SequentialIdMixin, CreatedAtUpdatedAtMixin
 from sqlalchemy import ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -9,7 +10,7 @@ if typing.TYPE_CHECKING:
     from .product import Product
 
 
-class ShoppingListItem(Base, SequentialIdMixin, TrackedMixin):
+class ShoppingListItem(Base, SequentialIdMixin, CreatedAtUpdatedAtMixin):
     """
     A model representing an item in a shopping list.
 
@@ -27,8 +28,8 @@ class ShoppingListItem(Base, SequentialIdMixin, TrackedMixin):
         "ShoppingList", foreign_keys=[list_id], uselist=False, back_populates="items"
     )
 
-    product_id: Mapped[str] = mapped_column(ForeignKey("Product.id"), nullable=True)
-    product: Mapped["Product"] = relationship("Product", foreign_keys=[product_id], uselist=False)
+    product_id: Mapped[Optional[str]] = mapped_column(ForeignKey("Product.id"), nullable=True)
+    product: Mapped[Optional["Product"]] = relationship("Product", foreign_keys=[product_id], uselist=False)
 
     def __repr__(self) -> str:
         return f"<ShoppingListItem id={self.id} name={self.name} list_id={self.list_id} product_id={self.product_id}>"

@@ -1,41 +1,53 @@
-from __future__ import annotations
-
-from barcode_api.utils.optional import make_optional
 from pydantic import BaseModel
 
-from .db_base import TrackedDbSchema
+from .db_base import CreatedAtUpdatedAt, SequentialId
 
 
-class ShoppingListCreateRequest(BaseModel):
+class ShoppingListBody(BaseModel):
+    """
+    Schema representing API request and response bodies for shopping lists.
+    """
+
     list_title: str
 
 
-class SHoppingListUpdateRequest(ShoppingListCreateRequest):
-    pass
-
-
 class ShoppingListCreate(BaseModel):
+    """
+    Schema for creating new shopping lists.
+    """
+
+    class Config:
+        orm_mode = True
+
     owner_user_id: str
     list_title: str
 
 
-@make_optional(exclude=["id"])
-class ShoppingListUpdate(ShoppingListCreate):
-    id: int
+class ShoppingListInDb(SequentialId, CreatedAtUpdatedAt, ShoppingListCreate):
+    """
+    Schema representing a shopping list in the database.
+    """
 
-
-class ShoppingListInDb(TrackedDbSchema, ShoppingListCreate):
-    id: int
-    items: "list[ShoppingListItemInDb]"
-
-
-class ShoppingListResponse(TrackedDbSchema, ShoppingListCreate):
     class Config:
         orm_mode = True
 
-    id: int
+
+class ShoppingListUpdate(SequentialId):
+    """
+    Schema for updating existing shopping lists
+    """
+
+    class Config:
+        orm_mode = True
+
+    owner_user_id: str | None = None
+    list_title: str | None = None
 
 
-from .shopping_list_item import ShoppingListItemInDb  # noqa: E402
+class ShoppingListResponse(SequentialId, CreatedAtUpdatedAt, ShoppingListBody):
+    """
+    Schema representing a shopping list in the API.
+    """
 
-ShoppingListItemInDb.update_forward_refs()
+    class Config:
+        orm_mode = True

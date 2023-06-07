@@ -17,9 +17,9 @@ Exceptions:
 import logging
 
 import httpx
-from barcode_api.schemas.products import ProductCreate
 from bs4 import BeautifulSoup
 
+from barcode_api.schemas.products import ProductScrapeResult
 from .exceptions import TagNotFoundException
 
 logger = logging.getLogger(__name__)
@@ -97,7 +97,7 @@ class ProductHTMLParser:
             return None
         # Can be converted to an PNG image, but it it actually needed?
         # can be mimified
-        return element.prettify().encode()
+        return bytes(element.prettify(), encoding="utf-8")
 
     def _get_product_meta_data(self, target_selector: str) -> dict | None:
         """
@@ -182,14 +182,14 @@ class ProductHTMLParser:
                 return None
             return response.content
 
-    async def collect(self) -> ProductCreate:
+    async def collect(self) -> ProductScrapeResult:
         """
         Collects the product information from the HTML data.
 
         Returns:
-        - A ProductCreate object containing the extracted product information.
+        - A ProductScrapeResult object containing the extracted product information.
         """
-        return ProductCreate(
+        return ProductScrapeResult(
             barcode=self.barcode,
             name=self._get_product_name(),
             barcode_image=self._get_barcode_image(),

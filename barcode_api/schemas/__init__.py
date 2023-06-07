@@ -4,15 +4,14 @@ from .image_data import ImageDataCreate, ImageDataInDb, ImageDataUpdate
 from .scraping import ScrapeDataCreate, ScrapeDataInDB, ScrapeDataUpdate
 from .shopping_list import (
     ShoppingListCreate,
-    ShoppingListCreateRequest,
     ShoppingListInDb,
     ShoppingListResponse,
     ShoppingListUpdate,
-    SHoppingListUpdateRequest,
+    ShoppingListBody,
 )
 from .shopping_list_item import (
     ShoppingListItemCreate,
-    ShoppingListItemCreateRequest,
+    ShoppingListItemBody,
     ShoppingListItemInDb,
     ShoppingListItemResponse,
     ShoppingListItemUpdate,

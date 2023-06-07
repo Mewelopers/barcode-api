@@ -1,26 +1,31 @@
 import logging
+from typing import Any
 from http import HTTPStatus
 
-from barcode_api.deps.common import Service
-from barcode_api.models import Product
-from barcode_api.schemas.products import ProductCommon, ProductMediaIds, ProductResponse, ProductSearch
-from barcode_api.services.crud.product_crud import ProductCrud
 from fastapi import APIRouter, HTTPException, Request, Response
 
-router = APIRouter(prefix="/products", tags=["products"])
+from barcode_api.deps.common import Service
+from barcode_api.utils.media import add_media_urls
+from barcode_api.schemas.products import ProductResponse, ProductBarcode, ProductInDb
+from barcode_api.services.crud.product_crud import ProductCrud
+
+router = APIRouter(prefix="/products", tags=["Products"])
 
 logger = logging.getLogger(__name__)
 
 
-@router.get("/{barcode}")
+@router.get("/{barcode}", response_model=ProductResponse)
 async def get_product(
     barcode: str,
     request: Request,
     response: Response,
     productCrud: ProductCrud = Service(ProductCrud),
-) -> ProductResponse:
+) -> Any:
+    """
+    Get a product by its barcode. If the product is not found in the local database, it will be searched online.
+    """
     try:
-        product_search = ProductSearch(barcode=barcode)
+        product_search = ProductBarcode(barcode=barcode.strip())
     except ValueError as e:
         logging.info(f"Invalid barcode: {barcode}, error: %s", e)
         raise HTTPException(
@@ -28,26 +33,14 @@ async def get_product(
             detail="Invalid barcode",
         )
 
-    def get_media_urls(model: Product) -> dict:
-        return {
-            "barcode_image_url": None
-            if model.barcode_image_uuid is None
-            else request.url_for("get_image", image_uid=model.barcode_image_uuid).path,
-            "thumbnail_url": None
-            if model.thumbnail_uuid is None
-            else request.url_for("get_image", image_uid=model.thumbnail_uuid).path,
-        }
-
     # Try to find the product in the database
     local_result = await productCrud.get_by_barcode(product_search.barcode)
     if local_result:
         response.headers["X-Source"] = "local"
-        return ProductResponse(
-            id=local_result.id,
-            **ProductCommon.from_orm(local_result).dict(),
-            **ProductMediaIds.from_orm(local_result).dict(),
-            **get_media_urls(local_result),
-        )
+        return {
+            **ProductInDb.from_orm(local_result).dict(),
+            **add_media_urls(local_result, request),
+        }
 
     result = await productCrud.find_online(product_search.barcode)
     if not result:
@@ -57,9 +50,7 @@ async def get_product(
         )
     response.headers["X-Source"] = "online"
 
-    return ProductResponse(
-        id=result.id,
-        **ProductCommon.from_orm(result).dict(),
-        **ProductMediaIds.from_orm(result).dict(),
-        **get_media_urls(result),
-    )
+    return {
+        **ProductResponse.from_orm(result).dict(),
+        **add_media_urls(result, request),
+    }

@@ -21,6 +21,12 @@ logging.config.fileConfig("logging.conf", disable_existing_loggers=False)
 
 
 def main() -> None:
+    # When running in the production a possible better way would be
+    # to use gunicorn to run the uvicorn server. Like described in the django docs:
+    # https://docs.djangoproject.com/en/4.2/howto/deployment/asgi/uvicorn/
+    # For our use case below should be enough.
+    # Uvicorn spawns one worker process and work asynchroniously.
+    # Simmilar behavior to how node.js works.
     import uvicorn
 
     uvicorn.run(app, host=settings.HOST, port=settings.PORT)

@@ -12,7 +12,7 @@ class ShoppingListItemCrud(CrudService[ShoppingListItem, ShoppingListItemCreate,
     def __init__(self, *, db_session: AsyncSession = DBSession()) -> None:
         super().__init__(model=ShoppingListItem, session=db_session)
 
-    async def get_by_list_id(self, list_id: int) -> list[ShoppingListItem]:
+    async def get_items_by_list_id(self, *, list_id: int) -> list[ShoppingListItem]:
         query = (
             select(ShoppingListItem)
             .where(self.model.list_id == list_id)
@@ -20,3 +20,12 @@ class ShoppingListItemCrud(CrudService[ShoppingListItem, ShoppingListItemCreate,
         )
         result = await self.db_session.execute(query)
         return list(result.scalars().all())
+
+    async def get_item_from_list(self, *, list_id: int, item_id: int) -> ShoppingListItem | None:
+        query = (
+            select(ShoppingListItem)
+            .where(self.model.list_id == list_id)
+            .where(self.model.id == item_id)
+            .options(selectinload(ShoppingListItem.product))
+        )
+        return (await self.db_session.execute(query)).scalar()
