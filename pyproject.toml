@@ -46,7 +46,9 @@ dev = [
   "pip-tools",
   "sqlalchemy-stubs",
   "types-beautifulsoup4",
-  "pytest-asyncio"
+  "pytest-asyncio",
+  "mkdocs-material",
+  "mkdocstrings[python]"
 ]
 
 [tool.ruff]

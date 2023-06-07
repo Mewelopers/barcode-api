@@ -7,7 +7,9 @@
 alembic==1.10.3
     # via barcode-api (pyproject.toml)
 anyio==3.6.2
-    # via starlette
+    # via
+    #   httpcore
+    #   starlette
 appdirs==1.4.4
     # via pyppeteer
 beautifulsoup4==4.12.2
@@ -16,6 +18,8 @@ cachetools==5.3.0
     # via fastapi-oidc
 certifi==2022.12.7
     # via
+    #   httpcore
+    #   httpx
     #   pyppeteer
     #   requests
 cffi==1.15.1
@@ -41,11 +45,18 @@ fastapi-oidc==0.0.9
 greenlet==2.0.2
     # via sqlalchemy
 h11==0.14.0
-    # via uvicorn
+    # via
+    #   httpcore
+    #   uvicorn
+httpcore==0.17.2
+    # via httpx
+httpx==0.24.1
+    # via barcode-api (pyproject.toml)
 idna==3.4
     # via
     #   anyio
     #   email-validator
+    #   httpx
     #   requests
 importlib-metadata==6.6.0
     # via pyppeteer
@@ -78,6 +89,8 @@ python-dotenv==1.0.0
     # via barcode-api (pyproject.toml)
 python-jose[cryptography]==3.3.0
     # via fastapi-oidc
+python-magic==0.4.27
+    # via barcode-api (pyproject.toml)
 python-multipart==0.0.6
     # via barcode-api (pyproject.toml)
 requests==2.29.0
@@ -87,7 +100,10 @@ rsa==4.9
 six==1.16.0
     # via ecdsa
 sniffio==1.3.0
-    # via anyio
+    # via
+    #   anyio
+    #   httpcore
+    #   httpx
 soupsieve==2.4.1
     # via beautifulsoup4
 sqlalchemy[asyncio]==2.0.13
