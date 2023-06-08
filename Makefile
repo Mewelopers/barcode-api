@@ -56,3 +56,6 @@ ruff-watch:
 mypy-watch:
 	# Requires entr, dmypy, and fd
 	fd . barcode_api --extension py | entr -r dmypy check /_
+
+run-docker:
+	docker compose up
