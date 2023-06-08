@@ -44,7 +44,7 @@ class ShoppingListUpdate(SequentialId):
     list_title: str | None = None
 
 
-class ShoppingListResponse(SequentialId, CreatedAtUpdatedAt, ShoppingListBody):
+class ShoppingListResponse(CreatedAtUpdatedAt, ShoppingListUpdate):
     """
     Schema representing a shopping list in the API.
     """
