@@ -1,4 +1,5 @@
 import logging
+from typing import Sequence
 
 from sqlalchemy import select
 
@@ -117,3 +118,8 @@ class ProductCrud(CrudService[Product, ProductCreate, ProductUpdate]):
         await self.db_session.commit()
         await self.db_session.refresh(product)
         return product
+
+    async def search(self, search: str, *, limit: int) -> Sequence[Product]:
+        query = select(self.model).where(self.model.name.ilike(f"%{search}%")).limit(limit)
+
+        return (await self.db_session.execute(query)).scalars().all()
