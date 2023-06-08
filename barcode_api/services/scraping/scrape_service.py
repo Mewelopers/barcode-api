@@ -38,6 +38,7 @@ class ScrapeService:
             headless=True,
             executablePath=settings.BROWSER_PATH,
             stealth=True,
+            args=["--no-sandbox"],
         )
         self.page = await self.browser.newPage()
         await stealth(self.page)
