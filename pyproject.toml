@@ -13,6 +13,7 @@ authors = [
 ]
 dependencies = [
   "fastapi",
+  "fastapi_utils",
   "uvicorn",
   "pydantic",
   "pydantic[email]",
