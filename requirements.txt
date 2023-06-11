@@ -40,7 +40,10 @@ fastapi==0.95.0
     # via
     #   barcode-api (pyproject.toml)
     #   fastapi-oidc
+    #   fastapi-utils
 fastapi-oidc==0.0.9
+    # via barcode-api (pyproject.toml)
+fastapi-utils @ git+https://github.com/Ignatella/fastapi-utils
     # via barcode-api (pyproject.toml)
 greenlet==2.0.2
     # via sqlalchemy
@@ -77,6 +80,7 @@ pydantic[email]==1.10.7
     #   barcode-api (pyproject.toml)
     #   fastapi
     #   fastapi-oidc
+    #   fastapi-utils
 pyee==8.2.2
     # via pyppeteer
 pyppeteer==1.0.2
@@ -110,6 +114,7 @@ sqlalchemy[asyncio]==2.0.13
     # via
     #   alembic
     #   barcode-api (pyproject.toml)
+    #   fastapi-utils
 starlette==0.26.1
     # via fastapi
 tqdm==4.65.0
