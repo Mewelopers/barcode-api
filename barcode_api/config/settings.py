@@ -9,7 +9,7 @@ class _Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8
     PROJECT_NAME: str = "Barcode API"
     PORT: int = 8000
-    HOST: str = "0.0.0.0"
+    HOST: str = "127.0.0.1"
 
     # DB
     POSTGRES_SERVER: str
@@ -45,5 +45,5 @@ class _Settings(BaseSettings):
         env_file = ".env"
 
 
-# Aslo why is mypy complaining about this? It works fine.
+# Also why is mypy complaining about this? It works fine.
 settings = _Settings()  # type: ignore

@@ -18,6 +18,8 @@ class ProductBarcode(BaseModel):
         match barcode_type:
             case 8:
                 checker = barcode.EAN8
+            case 12:
+                checker = barcode.UPCA
             case 13:
                 checker = barcode.EAN13
             case 14:

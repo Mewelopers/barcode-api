@@ -4,7 +4,6 @@ from .image_data import ImageDataCreate, ImageDataInDb, ImageDataUpdate
 from .scraping import ScrapeDataCreate, ScrapeDataInDB, ScrapeDataUpdate
 from .shopping_list import (
     ShoppingListCreate,
-    ShoppingListInDb,
     ShoppingListResponse,
     ShoppingListUpdate,
     ShoppingListBody,

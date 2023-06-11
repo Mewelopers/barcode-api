@@ -1,14 +1,22 @@
 from pydantic import BaseModel
-
+import datetime
+from fastapi_utils.api_model import APIModel
 from .db_base import CreatedAtUpdatedAt, SequentialId
 
 
-class ShoppingListBody(BaseModel):
+class ShoppingListBody(APIModel):
     """
     Schema representing API request and response bodies for shopping lists.
     """
 
     list_title: str
+
+
+class ShoppingListResponse(ShoppingListBody, SequentialId, CreatedAtUpdatedAt):
+    """
+    Schema representing a shopping list in the API.
+    """
+    owner_user_id: str
 
 
 class ShoppingListCreate(BaseModel):
@@ -23,15 +31,6 @@ class ShoppingListCreate(BaseModel):
     list_title: str
 
 
-class ShoppingListInDb(SequentialId, CreatedAtUpdatedAt, ShoppingListCreate):
-    """
-    Schema representing a shopping list in the database.
-    """
-
-    class Config:
-        orm_mode = True
-
-
 class ShoppingListUpdate(SequentialId):
     """
     Schema for updating existing shopping lists
@@ -42,12 +41,3 @@ class ShoppingListUpdate(SequentialId):
 
     owner_user_id: str | None = None
     list_title: str | None = None
-
-
-class ShoppingListResponse(CreatedAtUpdatedAt, ShoppingListUpdate):
-    """
-    Schema representing a shopping list in the API.
-    """
-
-    class Config:
-        orm_mode = True

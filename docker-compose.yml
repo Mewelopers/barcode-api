@@ -7,7 +7,7 @@ services:
       dockerfile: ./docker/Dockerfile
     # IMPORTANT: Update the image tag to the latest version before deploying
     # This is needed due to the way portainer handles image updates
-    image: barcode-api:v0.0.3
+    image: barcode-api:v0.0.4
     pull_policy: build
     container_name: barcode-api
     restart: unless-stopped

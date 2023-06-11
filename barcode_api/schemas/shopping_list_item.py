@@ -4,6 +4,7 @@ from .db_base import CreatedAtUpdatedAt, SequentialId
 from .products import ProductBarcode
 
 from barcode_api.utils.optional import make_optional
+from fastapi_utils.api_model import APIModel
 
 
 class ShoppingListItemCreate(BaseModel):
@@ -26,15 +27,6 @@ class ShoppingListItemInDb(SequentialId, CreatedAtUpdatedAt, ShoppingListItemCre
     ...
 
 
-@make_optional(include=["barcode"])
-class ShoppingListItemBody(ProductBarcode):
-    """
-    Represents a shopping list item in a request body.
-    """
-
-    name: str
-
-
 @make_optional(exclude=["id"])
 class ShoppingListItemUpdate(ShoppingListItemInDb):
     """
@@ -45,7 +37,16 @@ class ShoppingListItemUpdate(ShoppingListItemInDb):
     ...
 
 
-class ShoppingListItemResponse(ShoppingListItemInDb):
+@make_optional(include=["barcode"])
+class ShoppingListItemBody(ProductBarcode, APIModel):
+    """
+    Represents a shopping list item in a request body.
+    """
+
+    name: str
+
+
+class ShoppingListItemResponse(ShoppingListItemInDb, APIModel):
     """
     Schema for a shopping list item response.
     """

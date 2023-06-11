@@ -17,7 +17,6 @@ for entry in PUBLIC_ROUTES:
 for entry in AUTH_REQUIRED_ROUTES:
     authenticated_router.include_router(entry.router)
 
-
 api_router = APIRouter()
 api_router.include_router(public_router)
 api_router.include_router(authenticated_router)
