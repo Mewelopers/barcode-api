@@ -1,4 +1,5 @@
 import barcode  # type: ignore
+from fastapi_utils.api_model import APIModel
 from pydantic import BaseModel, Field, validator, UUID4
 
 from .db_base import CreatedAtUpdatedAt, SequentialId
@@ -72,8 +73,8 @@ class ProductResponse(ProductInformation, ProductMedia, ProductBarcode):
     Represents the final Product Response
     """
 
-    class Config:
-        orm_mode = True
+    class Config(APIModel.Config):
+        ...
 
     # For media
     thumbnail_url: str | None

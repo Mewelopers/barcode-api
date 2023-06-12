@@ -6,12 +6,11 @@ from fastapi import APIRouter, HTTPException, status, Request
 from barcode_api.deps.auth import JKPUserInfo
 from barcode_api.deps.common import Service
 from barcode_api.schemas.user import User
-from barcode_api.services.crud import ProductCrud, ShoppingListCrud, ShoppingListItemCrud
+from barcode_api.services.crud import ProductCrud, ShoppingListItemCrud
 from barcode_api.services.scraping.exceptions import ParserException
 from barcode_api.schemas.shopping_list_item import (
     ShoppingListItemResponse,
     ShoppingListItemBody,
-    ShoppingListItemCreate,
     ShoppingListItemUpdate,
 )
 from barcode_api.utils.shopping_list_extras import add_extra
@@ -94,7 +93,7 @@ async def update_shopping_list_item(
     if item is None or item.list.owner_user_id != user.id:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Shopping list item not found")
 
-    if body.barcode is not None and body.barcode != item.product.barcode:
+    if body.barcode is not None and body.barcode != getattr(item.product, "barcode", None):
         product = await product_crud.get_by_barcode(body.barcode)
         if product is None:
             try:
