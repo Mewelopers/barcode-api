@@ -23,7 +23,7 @@ dependencies = [
   "python-dotenv",
   "psycopg",
   "python-multipart",
-  "fastapi-oidc",
+  "fastapi-oidc@git+https://github.com/Critteros/fastapi-oidc@feat_allow_passing_jwt_decode_options",
   "python-barcode",
   "beautifulsoup4", # Scraping dependencies
   "pyppeteer",

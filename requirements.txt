@@ -41,7 +41,7 @@ fastapi==0.95.0
     #   barcode-api (pyproject.toml)
     #   fastapi-oidc
     #   fastapi-utils
-fastapi-oidc==0.0.9
+fastapi-oidc @ git+https://github.com/Critteros/fastapi-oidc@feat_allow_passing_jwt_decode_options
     # via barcode-api (pyproject.toml)
 fastapi-utils @ git+https://github.com/Ignatella/fastapi-utils
     # via barcode-api (pyproject.toml)

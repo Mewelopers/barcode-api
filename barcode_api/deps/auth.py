@@ -12,6 +12,9 @@ authenticate_user = get_auth(
     issuer=settings.OIDC_ISSUER,
     signature_cache_ttl=settings.OIDC_SIGNATURE_CACHE_TTL,
     token_type=OIDCToken,
+    jwt_decode_options={
+        "leeway": settings.OIDC_JWT_LEEWAY,
+    },
 )
 
 
