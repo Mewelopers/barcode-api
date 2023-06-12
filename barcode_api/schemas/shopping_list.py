@@ -1,5 +1,4 @@
 from pydantic import BaseModel
-import datetime
 from fastapi_utils.api_model import APIModel
 from .db_base import CreatedAtUpdatedAt, SequentialId
 
@@ -16,6 +15,10 @@ class ShoppingListResponse(ShoppingListBody, SequentialId, CreatedAtUpdatedAt):
     """
     Schema representing a shopping list in the API.
     """
+
+    class Config(APIModel.Config):
+        ...
+
     owner_user_id: str
 
 

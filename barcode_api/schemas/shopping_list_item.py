@@ -51,6 +51,9 @@ class ShoppingListItemResponse(ShoppingListItemInDb, APIModel):
     Schema for a shopping list item response.
     """
 
+    class Config(APIModel.Config):
+        ...
+
     product_barcode: str | None
     thumbnail_url: str | None
     barcode_image_url: str | None
