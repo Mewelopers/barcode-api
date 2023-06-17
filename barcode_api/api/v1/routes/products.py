@@ -28,7 +28,6 @@ async def product_search(
     params: ProductSearch = Depends(ProductSearch),
     product_crud: ProductCrud = Service(ProductCrud),
 ) -> Any:
-    print("Called")
     if params.query is None:
         result = await product_crud.get_multi(limit=params.limit)
         return [
