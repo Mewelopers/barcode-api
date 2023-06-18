@@ -49,7 +49,9 @@ dev = [
   "types-beautifulsoup4",
   "pytest-asyncio",
   "mkdocs-material",
-  "mkdocstrings[python]"
+  "mkdocstrings[python]",
+  "types-Pillow",
+  "numpy"
 ]
 
 [tool.ruff]
