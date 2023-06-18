@@ -1,6 +1,6 @@
 import pytest
 
-from ..html_parser import ProductHTMLParser
+from barcode_api.services.scraping.html_parser import ProductHTMLParser
 
 
 class TestProductHTMLParser:

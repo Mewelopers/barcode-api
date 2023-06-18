@@ -44,12 +44,19 @@ dev = [
   "pytest",
   "pytest-cov",
   "pytest-mock",
+  "pytest-env",
   "pip-tools",
   "sqlalchemy-stubs",
   "types-beautifulsoup4",
   "pytest-asyncio",
   "mkdocs-material",
-  "mkdocstrings[python]"
+  "mkdocstrings[python]",
+  "types-Pillow",
+  "Pillow",
+  "numpy",
+  "types-python-jose",
+  "jose",
+  "Faker"
 ]
 
 [tool.ruff]
@@ -65,4 +72,34 @@ target-version = ["py310"]
 include = ["barcode_api*"]
 
 [tool.mypy]
-exclude = ["build", "dist", "venv", "env", "node_modules"]
+exclude = ["build", "dist", "venv", "env", "node_modP>ules"]
+
+[tool.pytest.ini_options]
+env = [
+    "POSTGRES_SERVER=127.0.0.1:5432",
+    "POSTGRES_DB=test",
+    "POSTGRES_USER=postgres",
+    "POSTGRES_PASSWORD=postgres",
+    "OIDC_CLIENT_ID=barcode-api",
+    "OIDC_BASE_AUTHORIZATION_SERVER_URI=http://example.com",
+    "OIDC_ISSUER=http://example.com/identity",
+    "OIDC_SIGNATURE_CACHE_TTL=3600",
+]
+
+[tool.coverage]
+    [tool.coverage.run]
+    omit = [
+        # omit anything in a .local directory anywhere
+        '*/.local/*',
+        '__init__.py',
+        'tests/*',
+        '*/tests/*',
+        # omit anything in a .venv directory anywhere
+        '.venv/*',
+        # Ignore alembic migrations
+        'alembic/*',
+    ]
+    branch = true
+
+    [tool.coverage.report]
+    skip_empty = true
