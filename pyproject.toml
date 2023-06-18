@@ -53,7 +53,9 @@ dev = [
   "mkdocstrings[python]",
   "types-Pillow",
   "Pillow",
-  "numpy"
+  "numpy",
+  "types-python-jose",
+  "jose"
 ]
 
 [tool.ruff]

@@ -9,8 +9,9 @@ from alembic.config import Config
 from alembic.command import upgrade, downgrade
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from barcode_api.schemas.token import OIDCToken
 from .types import MockImage
-from .utils import random_image
+from .utils import random_image, build_oidc_token
 
 
 @pytest.fixture(scope="function")
@@ -66,3 +67,18 @@ async def session() -> AsyncGenerator[AsyncSession, None]:
 
     async with AsyncDBSession() as session:
         yield session
+
+
+@pytest.fixture(scope="function")
+def token(request: pytest.FixtureRequest) -> OIDCToken:
+    marker = request.node.get_closest_marker("roles")
+
+    params = {}
+    if marker is not None:
+        params["roles"] = marker.args[0]
+
+    marker = request.node.get_closest_marker("scopes")
+    if marker is not None:
+        params["scopes"] = marker.args[0]
+
+    return build_oidc_token(**params)

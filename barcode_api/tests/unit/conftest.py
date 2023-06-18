@@ -3,24 +3,11 @@ from fastapi import FastAPI
 
 from barcode_api.schemas.token import OIDCToken
 from barcode_api.schemas.user import User
-from ..utils import build_oidc_token
 
 
 @pytest.fixture(scope="function")
-def mock_auth(request: pytest.FixtureRequest, app: FastAPI) -> OIDCToken:
+def mock_auth(request: pytest.FixtureRequest, app: FastAPI, token: OIDCToken) -> OIDCToken:
     from barcode_api.deps.auth import authenticate_user
-
-    marker = request.node.get_closest_marker("roles")
-
-    params = {}
-    if marker is not None:
-        params["roles"] = marker.args[0]
-
-    marker = request.node.get_closest_marker("scopes")
-    if marker is not None:
-        params["scopes"] = marker.args[0]
-
-    token = build_oidc_token(**params)
 
     app.dependency_overrides[authenticate_user] = lambda: token
 
