@@ -10,8 +10,9 @@ from alembic.command import upgrade, downgrade
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from barcode_api.schemas.token import OIDCToken
+from barcode_api.models.product import Product
 from .types import MockImage
-from .utils import random_image, build_oidc_token
+from .utils import random_image, build_oidc_token, random_product
 
 
 @pytest.fixture(scope="function")
@@ -82,3 +83,13 @@ def token(request: pytest.FixtureRequest) -> OIDCToken:
         params["scopes"] = marker.args[0]
 
     return build_oidc_token(**params)
+
+
+@pytest.fixture(scope="function")
+def products(request: pytest.FixtureRequest) -> list[Product]:
+    marker = request.node.get_closest_marker("num_products")
+
+    if marker is not None:
+        return [random_product() for _ in range(marker.args[0])]
+
+    return [random_product() for _ in range(10)]

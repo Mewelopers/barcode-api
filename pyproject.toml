@@ -55,7 +55,8 @@ dev = [
   "Pillow",
   "numpy",
   "types-python-jose",
-  "jose"
+  "jose",
+  "Faker"
 ]
 
 [tool.ruff]
@@ -84,3 +85,21 @@ env = [
     "OIDC_ISSUER=http://example.com/identity",
     "OIDC_SIGNATURE_CACHE_TTL=3600",
 ]
+
+[tool.coverage]
+    [tool.coverage.run]
+    omit = [
+        # omit anything in a .local directory anywhere
+        '*/.local/*',
+        '__init__.py',
+        'tests/*',
+        '*/tests/*',
+        # omit anything in a .venv directory anywhere
+        '.venv/*',
+        # Ignore alembic migrations
+        'alembic/*',
+    ]
+    branch = true
+
+    [tool.coverage.report]
+    skip_empty = true
