@@ -12,13 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .types import MockImage
 from .utils import random_image
 
-os.environ = {  # type: ignore
-    "POSTGRES_SERVER": "127.0.0.1:5432",
-    "POSTGRES_DB": "test",
-    "POSTGRES_USER": "postgres",
-    "POSTGRES_PASSWORD": "postgres",
-}
-
 
 @pytest.fixture(scope="function")
 def app() -> Generator[FastAPI, None, None]:

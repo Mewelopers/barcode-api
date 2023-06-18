@@ -1,8 +1,11 @@
 import io
+from uuid import uuid4
 
 import numpy as np
 from PIL import Image
 
+from barcode_api.schemas.token import OIDCToken
+from barcode_api.schemas.auth import AuthRole, AuthScopes
 from .types import MockImage
 
 
@@ -14,3 +17,27 @@ def random_image(*, width: int, height: int) -> MockImage:
     with io.BytesIO() as output:
         image.save(output, format="JPEG")
         return MockImage(size=(width, height), data=output.getvalue(), content_type="image/jpeg")
+
+
+def build_oidc_token(
+    roles: set[AuthRole] = {AuthRole.CLIENT},
+    scopes: set[AuthScopes] = {
+        AuthScopes.OFFLINE_ACCESS,
+        AuthScopes.OPENID,
+        AuthScopes.PROFILE,
+        AuthScopes.JKP_API,
+        AuthScopes.EMAIL,
+        AuthScopes.ROLES,
+    },
+) -> OIDCToken:
+    return OIDCToken(
+        iss="test-iss",
+        sub=f"{uuid4()}",
+        aud="test-aud",
+        exp=99999999999,
+        iat=11111111111,
+        role=roles,
+        email="test-email@example.com",
+        name="test-name",
+        scope=scopes,
+    )

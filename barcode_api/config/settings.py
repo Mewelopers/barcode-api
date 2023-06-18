@@ -1,4 +1,5 @@
 from typing import Any, Dict
+from pathlib import Path
 
 from pydantic import BaseSettings, FilePath, PostgresDsn, validator
 
@@ -39,7 +40,7 @@ class _Settings(BaseSettings):
         )
 
     # Scraper
-    BROWSER_PATH: FilePath
+    BROWSER_PATH: FilePath = Path("/usr/bin/chromium")
 
     class Config:
         case_sensitive = True
