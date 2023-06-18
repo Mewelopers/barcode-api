@@ -7,6 +7,7 @@ from httpx import AsyncClient
 from fastapi import FastAPI
 from alembic.config import Config
 from alembic.command import upgrade, downgrade
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from .types import MockImage
 from .utils import random_image
@@ -64,3 +65,11 @@ def apply_migrations() -> Generator[None, None, None]:
 @pytest.fixture(scope="class")
 def image() -> MockImage:
     return random_image(width=100, height=100)
+
+
+@pytest_asyncio.fixture(scope="function")
+async def session() -> AsyncGenerator[AsyncSession, None]:
+    from barcode_api.config.database import AsyncDBSession
+
+    async with AsyncDBSession() as session:
+        yield session
